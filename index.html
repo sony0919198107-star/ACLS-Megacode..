@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACLS-Megacode | 專師 曾妍鳳 製</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for Celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        quest: {
+                            dark: '#080c18',
+                            card: '#10172c',
+                            border: '#1e2b4f',
+                            cyan: '#06b6d4',
+                            amber: '#f59e0b',
+                            rose: '#f43f5e',
+                            emerald: '#10b981',
+                            purple: '#a855f7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Noto Sans TC', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 全域字體：現代繁體中文黑體；字級：14號字 (14pt / 18.67px) */
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif !important;
+            font-size: 14pt !important;
+            line-height: 1.6 !important;
+        }
+
+        /* 防選取與安全防護 */
+        body {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+        }
+
+        h1, h2, h3, h4, strong, button {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif !important;
+        }
+
+        .wheel-glow {
+            box-shadow: 0 0 35px rgba(6, 182, 212, 0.35);
+        }
+        .pointer-triangle {
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 36px solid #f43f5e;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+        }
+
+        /* 轉盤正上方漫畫對話框氣泡 */
+        .speech-bubble {
+            position: relative;
+            background: linear-gradient(135deg, #10172c, #1e1b4b);
+            border: 2px solid #06b6d4;
+            border-radius: 18px;
+            box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.4);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 16px 14px 0;
+            border-style: solid;
+            border-color: #06b6d4 transparent;
+            display: block;
+            width: 0;
+        }
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 14px 12px 0;
+            border-style: solid;
+            border-color: #10172c transparent;
+            display: block;
+            width: 0;
+            z-index: 1;
+        }
+
+        /* 人型圖熱點樣式 */
+        .body-hotspot {
+            cursor: pointer;
+            transition: all 0.25s ease;
+            transform-origin: center;
+        }
+        .body-hotspot:hover {
+            filter: drop-shadow(0 0 10px #06b6d4);
+            transform: scale(1.1);
+        }
+        .body-hotspot.active {
+            filter: drop-shadow(0 0 14px #f43f5e);
+            stroke: #f43f5e !important;
+            stroke-width: 3 !important;
+        }
+    </style>
+</head>
+<body class="bg-quest-dark text-slate-100 font-sans min-h-screen py-4 px-2 sm:px-4">
+<body class="bg-quest-dark text-slate-100 font-kai min-h-screen py-4 px-2 sm:px-4">
+
+    <!-- 頂部資訊列：標題修改為 ACLS-Megacode -->
+    <header class="max-w-5xl mx-auto mb-4 flex flex-wrap items-center justify-between gap-3 bg-quest-card border border-quest-border px-4 py-3 rounded-2xl shadow-xl">
+        <div class="flex items-center gap-2.5">
+            <span class="w-3.5 h-3.5 rounded-full bg-cyan-400 animate-ping"></span>
+            <div>
+                <h1 class="text-2xl font-black text-white flex items-center gap-2">
+                    <i class="fa-solid fa-people-group text-cyan-400"></i> ACLS-Megacode
+                </h1>
+                <p class="text-sm text-slate-300 mt-0.5">命運大輪盤抽題 • 6大戰鬥位置 TRM 職責 • 閉環溝通 (Closed-Loop) • 現場安妮闖關</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="font-bold text-teal-300 bg-teal-950/80 px-3 py-1.5 rounded-xl border border-teal-800">
+                <i class="fa-solid fa-user-nurse mr-1"></i> ACLS Instructor: 曾妍鳳 製
+            </span>
+            <button onclick="window.print()" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold border border-slate-700 transition">
+                <i class="fa-solid fa-print"></i> 列印戰備卡
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto space-y-5">
+
+        <!-- ================= TRM 四大核心技能快捷列 ================= -->
+        <section class="bg-slate-900/90 border border-indigo-500/40 rounded-2xl p-4 shadow-lg">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
+                <span class="font-extrabold text-indigo-300 flex items-center gap-2">
+                    <i class="fa-solid fa-shield-heart text-indigo-400"></i> TRM (Team Resource Management) 四大急救戰鬥基柱
+                </span>
+                <span class="text-sm text-slate-400">醫療團隊資源管理原則</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
+                <div class="p-2.5 rounded-xl bg-indigo-950/40 border border-indigo-800/40">
+                    <strong class="text-indigo-300 block">1. 領導 (Leadership)</strong>
+                    <span class="text-sm text-slate-400">任務指派 • Briefing 簡報 • Huddle 討論</span>
+                </div>
+                <div class="p-2.5 rounded-xl bg-indigo-950/40 border border-indigo-800/40">
+                    <strong class="text-cyan-300 block">2. 狀況監測 (Monitoring)</strong>
+                    <span class="text-sm text-slate-400">STEP 評估 • 交叉監測 • 警覺性</span>
+                </div>
+                <div class="p-2.5 rounded-xl bg-indigo-950/40 border border-indigo-800/40">
+                    <strong class="text-amber-300 block">3. 相互支援 (Support)</strong>
+                    <span class="text-sm text-slate-400">主動替換 • CUS 原則 • 兩次挑戰</span>
+                </div>
+                <div class="p-2.5 rounded-xl bg-indigo-950/40 border border-indigo-800/40">
+                    <strong class="text-emerald-300 block">4. 溝通 (Communication)</strong>
+                    <span class="text-sm text-slate-400">Closed-Loop 呼應 • Call-out 大聲報數</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 核心三大步驟導覽 ================= -->
+        <nav class="grid grid-cols-3 gap-2.5 text-center font-bold">
+            <div id="navStep1" class="py-2.5 px-3 rounded-xl bg-cyan-950/90 text-cyan-300 border-2 border-cyan-500 shadow-md flex items-center justify-center gap-2 transition">
+                <span class="w-6 h-6 rounded-full bg-cyan-500 text-slate-900 flex items-center justify-center text-sm font-black">1</span>
+                <span>轉盤抽題 (5H5T)</span>
+            </div>
+            <div id="navStep2" class="py-2.5 px-3 rounded-xl bg-slate-900/80 text-slate-400 border border-slate-800 flex items-center justify-center gap-2 transition">
+                <span class="w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center text-sm font-black">2</span>
+                <span>TRM 戰鬥位置 (Roles)</span>
+            </div>
+            <div id="navStep3" class="py-2.5 px-3 rounded-xl bg-slate-900/80 text-slate-400 border border-slate-800 flex items-center justify-center gap-2 transition">
+                <span class="w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center text-sm font-black">3</span>
+                <span>安妮實戰闖關 (Quest)</span>
+            </div>
+        </nav>
+
+        <!-- ================= 第一階段：轉盤抽題 (Megacode Roulette) ================= -->
+        <section id="sectionWheel" class="bg-quest-card border border-quest-border rounded-3xl p-5 sm:p-6 shadow-2xl relative">
+            <div class="text-center max-w-xl mx-auto mb-4">
+                <span class="px-3 py-1 rounded text-xs font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-800 tracking-wider">
+                    STEP 1 • 隨機情境抽籤（盲抽不破題）
+                </span>
+                <h2 class="text-xl sm:text-2xl font-black text-white mt-1.5">ACLS-Megacode 命運大轉盤</h2>
+                <p class="text-sm text-slate-300 mt-1">請點擊輪盤中央「抽題」！轉到的題目將直接顯示於轉盤上方對話框！</p>
+            </div>
+
+            <!-- ================= 新增：轉盤上方即時對話框 (Speech Bubble) ================= -->
+            <div class="max-w-md mx-auto mb-3">
+                <div id="wheelSpeechBubble" class="speech-bubble px-5 py-3 text-center">
+                    <div class="flex items-center justify-center gap-2 text-cyan-400 text-sm font-bold">
+                        <i class="fa-solid fa-bullhorn text-amber-400 animate-bounce"></i>
+                        <span id="speechBubbleTag">轉盤就緒</span>
+                    </div>
+                    <div id="speechBubbleText" class="text-base sm:text-lg font-black text-white mt-1">
+                        請按下中央按鈕，旋轉大轉盤抽取現場情境！
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center justify-center relative pt-2 pb-3">
+                <div class="absolute top-2 z-20 pointer-triangle"></div>
+                <div class="relative p-2 rounded-full wheel-glow bg-slate-950 border-4 border-cyan-500/50">
+                    <canvas id="wheelCanvas" width="350" height="350" class="rounded-full cursor-pointer"></canvas>
+                    <button id="spinBtn" onclick="spinWheel()" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-gradient-to-tr from-rose-600 to-amber-500 text-white font-black shadow-2xl border-4 border-slate-950 flex flex-col items-center justify-center hover:scale-105 active:scale-95 transition">
+                        <span class="text-base">SPIN!</span>
+                        <span class="text-xs font-normal opacity-90">抽題</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 特別事件展示區 (換下一組 / 休息一下) -->
+            <div id="specialEventBox" class="hidden mt-5 p-5 rounded-2xl border-2 shadow-2xl animate-fade-in text-center max-w-lg mx-auto">
+                <div id="specialIcon" class="text-4xl mb-2">🎉</div>
+                <h3 id="specialTitle" class="text-xl font-black text-white">特別事件</h3>
+                <p id="specialDesc" class="text-slate-200 mt-2 leading-relaxed">事件說明...</p>
+                <div class="mt-4 flex justify-center gap-3">
+                    <button onclick="resetSpecialEvent()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 font-black hover:brightness-110 shadow-lg">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> 再次旋轉大輪盤
+                    </button>
+                </div>
+            </div>
+
+            <!-- 抽中題目展示區 (不直接破題，純給客觀臨床情境) -->
+            <div id="caseResultBox" class="hidden mt-5 p-5 rounded-2xl bg-gradient-to-r from-cyan-950/70 via-slate-900 to-purple-950/70 border-2 border-cyan-400 shadow-2xl animate-fade-in">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="space-y-1.5 text-center sm:text-left">
+                        <div class="flex items-center justify-center sm:justify-start gap-2">
+                            <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-cyan-900 text-cyan-200" id="caseCategory">情境代碼</span>
+                            <span class="font-mono text-amber-400 font-bold" id="caseInitialRhythm">初始心律</span>
+                        </div>
+                        <h3 class="text-xl font-black text-white" id="caseTitle">臨床主訴情境</h3>
+                        <p class="text-slate-200 leading-relaxed max-w-2xl" id="caseDescription">病患病史與現場初見特徵...</p>
+                        <div class="text-teal-300 font-bold pt-1">
+                            💡 提示：請急救團隊就位後，運用「人型圖」進行從頭到腳理學檢查，聯想並鑑別 5H5T 病因！
+                        </div>
+                    </div>
+                    <button onclick="goToRoles()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 font-black hover:brightness-110 shadow-lg shrink-0 flex items-center gap-2">
+                        <span>指派 TRM 戰鬥角色</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 第二階段：急救小組戰鬥位置與 TRM 任務 ================= -->
+        <section id="sectionRoles" class="hidden bg-quest-card border border-quest-border rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-quest-border pb-3">
+                <div>
+                    <span class="px-3 py-1 rounded text-xs font-extrabold uppercase bg-purple-950 text-purple-300 border border-purple-800 tracking-wider">
+                        STEP 2 • TRM 角色分工與閉環回饋
+                    </span>
+                    <h2 class="text-xl font-black text-white mt-1.5">急救小組 6 大戰鬥位置與 TRM 溝通任務</h2>
+                    <p class="text-slate-300">落實「閉環式溝通 (Closed-Loop)」與「大聲報數 (Call-out)」！</p>
+                </div>
+                <button onclick="goToQuest()" class="self-start sm:self-auto px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black transition flex items-center gap-2 shadow">
+                    <span>全員就位 • 進入安妮模擬闖關</span>
+                    <i class="fa-solid fa-play"></i>
+                </button>
+            </div>
+
+            <!-- 6 大角色卡片 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                <!-- 1. Team Leader -->
+                <div class="p-4 rounded-2xl bg-slate-900 border-2 border-amber-500/50 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-black text-amber-300 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-crown text-amber-400"></i> 1. 急救隊長 (Leader)
+                        </span>
+                        <span class="text-xs text-amber-200 bg-amber-950 px-2 py-0.5 rounded border border-amber-800">站病患右側或床尾</span>
+                    </div>
+                    <ul class="text-slate-300 space-y-1 text-sm">
+                        <li>• <strong>TRM 站位原則：</strong>雙手背後不親自壓胸，維持全面情境警覺 (Situational Awareness)。</li>
+                        <li>• <strong>TRM 溝通技能：</strong>清楚指名道姓下指令（例如：「妍鳳，請給予 Epinephrine 1mg 靜脈注射」）。</li>
+                        <li>• <strong>核心決策：</strong>召集團隊快速進行 5H5T Huddle 短會討論。</li>
+                    </ul>
+                </div>
+
+                <!-- 2. Compressor -->
+                <div class="p-4 rounded-2xl bg-slate-900 border-2 border-rose-500/50 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-black text-rose-300 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-hands-holding-circle text-rose-400"></i> 2. 按壓手 (Compressor)
+                        </span>
+                        <span class="text-xs text-rose-200 bg-rose-950 px-2 py-0.5 rounded border border-rose-800">站病患身旁</span>
+                    </div>
+                    <ul class="text-slate-300 space-y-1 text-sm">
+                        <li>• <strong>高品質 CPR：</strong>深度 5~6cm、頻率 100~120 次/分、完全回彈、避免中斷。</li>
+                        <li>• <strong>TRM 相互支援：</strong>體力疲憊時主動提出支援需求，每 2 分鐘或分析心律時<strong>必須換手</strong>。</li>
+                        <li>• <strong>TRM Call-out：</strong>大聲數出按壓次數，讓呼吸道手與給藥手掌握節奏。</li>
+                    </ul>
+                </div>
+
+                <!-- 3. Airway Master -->
+                <div class="p-4 rounded-2xl bg-slate-900 border-2 border-cyan-500/50 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-black text-cyan-300 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-mask-ventilator text-cyan-400"></i> 3. 呼吸道管理手 (Airway)
+                        </span>
+                        <span class="text-xs text-cyan-200 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-800">站病患頭側</span>
+                    </div>
+                    <ul class="text-slate-300 space-y-1 text-sm">
+                        <li>• <strong>呼吸道處置：</strong>BVM 氣閥面罩、氣管內管或 SGA 置入，確認胸壁起伏與聽診雙側對稱。</li>
+                        <li>• <strong>TRM 狀況監測：</strong>主動監控並大聲覆誦 EtCO2 數值（例如：「報告隊長，EtCO2 目前 15 mmHg」）。</li>
+                        <li>• <strong>5H5T 守門員：</strong>留意通氣阻力（排查氣胸）、分泌物抽吸。</li>
+                    </ul>
+                </div>
+
+                <!-- 4. AED/Defibrillator Operator -->
+                <div class="p-4 rounded-2xl bg-slate-900 border-2 border-purple-500/50 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-black text-purple-300 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-bolt-lightning text-purple-400"></i> 4. 去顫電擊手 (Defibrillator)
+                        </span>
+                        <span class="text-xs text-purple-200 bg-purple-950 px-2 py-0.5 rounded border border-purple-800">面對監視器/按壓手對側</span>
+                    </div>
+                    <ul class="text-slate-300 space-y-1 text-sm">
+                        <li>• <strong>電擊操作：</strong>開機、貼片、旋鈕調至指定焦耳數（雙相波 ≥ 200 J 或原廠建議）。</li>
+                        <li>• <strong>TRM 安全口號：</strong>電擊前高聲明確宣告：「我離開、你離開、大家都離開 (I clear, you clear, everybody clears)！」</li>
+                        <li>• <strong>閉環回覆：</strong>電擊完畢立即大聲覆誦：「電擊完成，立刻恢復按壓！」</li>
+                    </ul>
+                </div>
+
+                <!-- 5. IV/IO/Medication Nurse -->
+                <div class="p-4 rounded-2xl bg-slate-900 border-2 border-teal-500/50 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-black text-teal-300 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-syringe text-teal-400"></i> 5. 靜脈給藥手 (Medication/IV)
+                        </span>
+                        <span class="text-xs text-teal-200 bg-teal-950 px-2 py-0.5 rounded border border-teal-800">病患靜脈通路側</span>
+                    </div>
+                    <ul class="text-slate-300 space-y-1 text-sm">
+                        <li>• <strong>管路建立：</strong>大口徑 IV 或快速置入骨內針 (IO)。</li>
+                        <li>• <strong>TRM 閉環式回饋 (Closed-Loop)：</strong>
+                            <div class="text-teal-200 pl-2 mt-1">
+                                「收到，Epinephrine 1mg IV push 準備中」→ 給藥後：「Epinephrine 1mg 已推注完成並沖水 20 mL！」
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 6. Timer / Recorder -->
+                <div class="p-4 rounded-2xl bg-slate-900 border-2 border-blue-500/50 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-black text-blue-300 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-user text-blue-400"></i> 6. 記錄與計時員 (Recorder)
+                        </span>
+                        <span class="text-xs text-blue-200 bg-blue-950 px-2 py-0.5 rounded border border-blue-800">隊長旁或推車旁</span>
+                    </div>
+                    <ul class="text-slate-300 space-y-1 text-sm">
+                        <li>• <strong>時間軸掌控：</strong>碼表計時，主動預警（「按壓已過 1 分 45 秒，請準備換手」）。</li>
+                        <li>• <strong>TRM 相互支援 (CUS)：</strong>當發現給藥間隔不足 3 分鐘或忘記換手時，運用 CUS 提出善意提醒。</li>
+                        <li>• <strong>詳實記錄：</strong>記錄電擊次數、累積藥物量、ROSC 時間點。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 第三階段：現場安妮情境變幻闖關 ================= -->
+        <section id="sectionQuest" class="hidden bg-quest-card border-2 border-cyan-500/60 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-quest-border pb-3">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-3 py-1 rounded text-xs font-extrabold uppercase bg-cyan-950 text-cyan-300 border border-cyan-800 tracking-wider">
+                            STEP 3 • 現場模擬安妮闖關
+                        </span>
+                        <span class="text-sm text-indigo-400 font-bold">TRM 協作 + 從頭到腳身體評估 + 5H5T 解謎</span>
+                    </div>
+                    <h2 class="text-xl font-black text-white mt-1.5" id="questCaseHeader">案例情境實戰闖關</h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-300 bg-amber-950/80 px-3 py-1.5 rounded-xl border border-amber-800">
+                        關卡進度：<span id="currentStageText" class="font-bold">關卡 1 / 3</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- 當前現場安妮狀態儀表板 -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                    <div class="text-xs text-slate-400">心律 (Rhythm)</div>
+                    <div class="text-base font-black text-rose-400 font-mono mt-0.5" id="hudRhythm">PEA</div>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                    <div class="text-xs text-slate-400">脈搏 (Pulse)</div>
+                    <div class="text-base font-black text-amber-400 font-mono mt-0.5" id="hudPulse">無頸動脈搏動</div>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                    <div class="text-xs text-slate-400">EtCO2</div>
+                    <div class="text-base font-black text-cyan-300 font-mono mt-0.5" id="hudEtCO2">12 mmHg</div>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                    <div class="text-xs text-slate-400">TRM 閉環溝通狀態</div>
+                    <div class="text-base font-black text-emerald-400 font-mono mt-0.5" id="hudTeamStatus">隊長下達指令中</div>
+                </div>
+            </div>
+
+            <!-- ================= 新增：2 分鐘 CPR 倒數計時器與最後 10 秒警示音效 ================= -->
+            <div class="p-3.5 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-rose-950/40 border-2 border-rose-500/50 shadow-xl flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-rose-950 border border-rose-700/80 flex items-center justify-center text-rose-400 text-xl font-black shrink-0 shadow-inner">
+                        <i class="fa-solid fa-stopwatch" id="timerIcon"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-rose-900/80 text-rose-200 border border-rose-700">
+                                CPR 循環計時
+                            </span>
+                            <span class="text-xs text-amber-300 font-bold" id="timerStatusNotice">最後 10 秒倒數警示</span>
+                        </div>
+                        <div class="text-2xl font-black font-mono text-white tracking-wider mt-0.5" id="cprTimerDisplay">
+                            02:00
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 倒數即時呼應橫幅 -->
+                <div id="cprWarningBanner" class="hidden px-3.5 py-1.5 rounded-xl bg-rose-900/90 border border-rose-400 text-rose-100 text-xs font-extrabold animate-pulse">
+                    ⚠️ 叮！最後 10 秒：準備停止壓胸、下一位按壓手就位！
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button id="timerToggleBtn" onclick="toggleCprTimer()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 hover:brightness-110 text-white font-black text-xs transition flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-play" id="timerToggleIcon"></i>
+                        <span id="timerToggleText">啟動 2 分鐘倒數</span>
+                    </button>
+                    <button onclick="resetCprTimer()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 transition">
+                        <i class="fa-solid fa-rotate-right"></i> 重置
+                    </button>
+                    <button onclick="toggleAudioMute()" id="audioMuteBtn" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-bold border border-slate-700 transition">
+                        <i class="fa-solid fa-volume-high" id="audioMuteIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 從頭到腳全身評估人型圖互動區 -->
+            <div class="p-5 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/40 border border-cyan-500/40 shadow-inner">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2.5 mb-3.5">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-7 h-7 rounded-lg bg-cyan-900/80 text-cyan-300 flex items-center justify-center text-sm font-bold">
+                            <i class="fa-solid fa-person-dots-from-line"></i>
+                        </span>
+                        <div>
+                            <h4 class="text-base font-extrabold text-white">安妮身體評估：從頭到腳臨床線索偵查 (Head-to-Toe Assessment)</h4>
+                            <p class="text-xs text-slate-400">點擊人型圖發光點部位，查驗臨床理學徵象並獲取 TRM Call-out 溝通線索！</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-cyan-300 bg-cyan-950 px-2.5 py-1 rounded border border-cyan-800 font-mono self-start sm:self-auto">
+                        <i class="fa-solid fa-hand-pointer mr-1"></i> 點選部位查探
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                    <!-- 左側：互動式向量人型圖 -->
+                    <div class="md:col-span-5 flex justify-center py-1">
+                        <div class="relative bg-slate-950/80 p-3 rounded-2xl border border-slate-800 shadow-xl flex items-center justify-center">
+                            <svg width="230" height="350" viewBox="0 0 200 320" class="select-none">
+                                <path d="M 100 20 C 112 20 120 28 120 42 C 120 54 114 62 108 65 L 115 72 L 140 82 C 148 85 152 92 148 100 L 138 140 C 136 148 132 150 128 148 L 122 135 L 122 185 C 122 195 125 200 130 205 L 132 280 C 132 290 125 295 118 295 C 112 295 108 290 108 280 L 105 200 L 95 200 L 92 280 C 92 290 88 295 82 295 C 75 295 68 290 68 280 L 70 205 C 75 200 78 195 78 185 L 78 135 L 72 148 C 68 150 64 148 62 140 L 52 100 C 48 92 52 85 60 82 L 85 72 L 92 65 C 86 62 80 54 80 42 C 80 28 88 20 100 20 Z" 
+                                      fill="#1e293b" stroke="#334155" stroke-width="2.5" stroke-linejoin="round" />
+
+                                <line x1="100" y1="70" x2="100" y2="190" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.6"/>
+                                <ellipse cx="100" cy="100" rx="18" ry="14" fill="none" stroke="#475569" stroke-width="1.5" opacity="0.5"/>
+
+                                <!-- 6 大互動熱點 -->
+                                <g class="body-hotspot" id="hotspot-head" onclick="inspectBodyPart('head')">
+                                    <circle cx="100" cy="45" r="14" fill="#06b6d4" fill-opacity="0.25" stroke="#06b6d4" stroke-width="2" class="animate-pulse" />
+                                    <circle cx="100" cy="45" r="5" fill="#06b6d4" />
+                                    <text x="100" y="49" font-size="8" fill="#ffffff" font-weight="bold" text-anchor="middle">頭頸</text>
+                                </g>
+
+                                <g class="body-hotspot" id="hotspot-lungs" onclick="inspectBodyPart('lungs')">
+                                    <circle cx="118" cy="95" r="13" fill="#38bdf8" fill-opacity="0.25" stroke="#38bdf8" stroke-width="2" />
+                                    <circle cx="118" cy="95" r="4.5" fill="#38bdf8" />
+                                    <text x="118" y="99" font-size="8" fill="#ffffff" font-weight="bold" text-anchor="middle">胸肺</text>
+                                </g>
+
+                                <g class="body-hotspot" id="hotspot-heart" onclick="inspectBodyPart('heart')">
+                                    <circle cx="86" cy="102" r="13" fill="#f43f5e" fill-opacity="0.25" stroke="#f43f5e" stroke-width="2" />
+                                    <circle cx="86" cy="102" r="4.5" fill="#f43f5e" />
+                                    <text x="86" y="106" font-size="8" fill="#ffffff" font-weight="bold" text-anchor="middle">心臟</text>
+                                </g>
+
+                                <g class="body-hotspot" id="hotspot-pelvis" onclick="inspectBodyPart('pelvis')">
+                                    <circle cx="100" cy="155" r="14" fill="#a855f7" fill-opacity="0.25" stroke="#a855f7" stroke-width="2" />
+                                    <circle cx="100" cy="155" r="4.5" fill="#a855f7" />
+                                    <text x="100" y="159" font-size="8" fill="#ffffff" font-weight="bold" text-anchor="middle">骨盆</text>
+                                </g>
+
+                                <g class="body-hotspot" id="hotspot-limbs" onclick="inspectBodyPart('limbs')">
+                                    <circle cx="60" cy="142" r="12" fill="#f59e0b" fill-opacity="0.25" stroke="#f59e0b" stroke-width="2" />
+                                    <circle cx="60" cy="142" r="4" fill="#f59e0b" />
+                                    <text x="60" y="146" font-size="7.5" fill="#ffffff" font-weight="bold" text-anchor="middle">肢端</text>
+                                </g>
+
+                                <g class="body-hotspot" id="hotspot-back" onclick="inspectBodyPart('back')">
+                                    <circle cx="100" cy="235" r="12" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="2" />
+                                    <circle cx="100" cy="235" r="4" fill="#10b981" />
+                                    <text x="100" y="239" font-size="7.5" fill="#ffffff" font-weight="bold" text-anchor="middle">下肢</text>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- 右側：理學檢查詳細發現與 TRM Call-out 面板 -->
+                    <div class="md:col-span-7 space-y-2.5">
+                        <div class="flex items-center justify-between bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-800">
+                            <span class="font-bold text-cyan-300 flex items-center gap-2">
+                                <i class="fa-solid fa-stethoscope"></i>
+                                <span id="assessmentPartName">頭頸部評估 (點選部位查探)</span>
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono" id="assessmentTargetTag">Head &amp; Neck</span>
+                        </div>
+
+                        <!-- 理學徵象卡 -->
+                        <div class="p-3.5 rounded-xl bg-slate-950/90 border border-slate-800 space-y-1.5">
+                            <div class="text-amber-300 font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-magnifying-glass"></i> 理學檢查客觀發現 (Physical Findings)：
+                            </div>
+                            <p class="text-slate-200 leading-relaxed font-kai" id="assessmentFindingText">
+                                請點擊左方人型圖發光節點（頭頸、胸肺、心臟、骨盆、肢端），即可查驗當前安妮病患的即時臨床體徵。
+                            </p>
+                        </div>
+
+                        <!-- TRM 呼應溝通建議卡 -->
+                        <div class="p-3.5 rounded-xl bg-indigo-950/40 border border-indigo-700/50 space-y-1.5">
+                            <div class="text-indigo-300 font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-bullhorn text-cyan-400"></i> TRM 標準覆誦與示警 (Call-out Example)：
+                            </div>
+                            <p class="text-cyan-200 italic leading-relaxed" id="assessmentTrmCallout">
+                                「隊員檢查後應大聲回報隊長理學徵候，提供 5H5T 決策依據。」
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 新增：床邊檢查客觀數據卡 (POCUS / 12導程 / ABG) ================= -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/90 border-2 border-indigo-500/50 shadow-xl space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-7 h-7 rounded-lg bg-indigo-900/80 text-indigo-300 flex items-center justify-center text-sm font-bold">
+                            <i class="fa-solid fa-laptop-medical"></i>
+                        </span>
+                        <div>
+                            <h4 class="text-base font-extrabold text-white">床邊檢查客觀數據卡 (Bedside Diagnostic Console)</h4>
+                            <p class="text-xs text-slate-400">依據抽中案例情境即時呈現：床邊超音波 POCUS、12 導程 ECG 與動脈血氣分析 ABG！</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-indigo-300 bg-indigo-950 px-2.5 py-1 rounded border border-indigo-800 font-mono">
+                        <i class="fa-solid fa-satellite-dish mr-1 text-cyan-400 animate-pulse"></i> 實時數據連線中
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <!-- 1. POCUS 床邊超音波 -->
+                    <div class="p-3.5 rounded-xl bg-slate-900/90 border border-cyan-800/60 space-y-2">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
+                            <span class="font-extrabold text-cyan-300 text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-wave-square"></i> POCUS 床邊超音波
+                            </span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800" id="cardPocusTag">
+                                影像分析
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-200 leading-relaxed font-sans" id="cardPocusDesc">
+                            超音波影像正在探查中...
+                        </p>
+                        <div class="text-[11px] text-cyan-200 bg-cyan-950/40 p-2 rounded-lg border border-cyan-900/50" id="cardPocusKey">
+                            關鍵特徵：-
+                        </div>
+                    </div>
+
+                    <!-- 2. 12 導程心電圖 ECG -->
+                    <div class="p-3.5 rounded-xl bg-slate-900/90 border border-purple-800/60 space-y-2">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
+                            <span class="font-extrabold text-purple-300 text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-heart-pulse"></i> 12 導程心電圖 (ECG)
+                            </span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800" id="cardEcgTag">
+                                心電圖表徵
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-200 leading-relaxed font-sans" id="cardEcgDesc">
+                            12 導程訊號描繪中...
+                        </p>
+                        <div class="text-[11px] text-purple-200 bg-purple-950/40 p-2 rounded-lg border border-purple-900/50" id="cardEcgKey">
+                            關鍵特徵：-
+                        </div>
+                    </div>
+
+                    <!-- 3. ABG 動脈血氣分析 -->
+                    <div class="p-3.5 rounded-xl bg-slate-900/90 border border-amber-800/60 space-y-2">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
+                            <span class="font-extrabold text-amber-300 text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-vial"></i> ABG 動脈血氣檢驗
+                            </span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800" id="cardAbgTag">
+                                實驗室數據
+                            </span>
+                        </div>
+                        <div class="text-xs text-slate-200 font-mono space-y-0.5 bg-slate-950/80 p-2 rounded-lg border border-slate-800" id="cardAbgValues">
+                            pH: - | PaCO2: - | HCO3-: -
+                        </div>
+                        <p class="text-xs text-amber-200 leading-relaxed" id="cardAbgInterpretation">
+                            臨床判讀解析...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 關卡題目與情境描述區 -->
+            <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-700/80 space-y-3.5">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-7 h-7 rounded-lg bg-cyan-600 text-slate-950 flex items-center justify-center font-black" id="stageBadge">Q1</span>
+                    <h3 class="text-lg font-bold text-white" id="stageTitle">初步處置抉擇</h3>
+                </div>
+                <p class="text-slate-200 leading-relaxed bg-slate-950/70 p-4 rounded-xl border border-slate-800" id="stageScenario">
+                    安妮目前呈現 PEA，按壓手正在高品質 CPR。請隊長依據人型圖線索下達進一步處置指令！
+                </p>
+
+                <!-- 選項按鈕組 -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2" id="optionsContainer">
+                    <!-- 程式動態注入 -->
+                </div>
+
+                <!-- 結果反饋說明框 (答題後出現) -->
+                <div id="feedbackBox" class="hidden p-4 rounded-xl border leading-relaxed animate-fade-in">
+                    <!-- 程式動態注入 -->
+                </div>
+            </div>
+
+            <!-- 下一步或重玩按鈕 -->
+            <div class="flex items-center justify-between pt-2">
+                <button onclick="resetToWheel()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold border border-slate-700">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> 重抽題目
+                </button>
+                <button id="nextStageBtn" onclick="nextStage()" class="hidden px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black shadow-lg flex items-center gap-2">
+                    <span>進入下一情境變化</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= 5H5T × TRM 鑑別診斷與溝通矩陣 (可收合字典) ================= -->
+        <section class="bg-quest-card border border-quest-border rounded-3xl p-5 shadow-xl">
+            <details class="cursor-pointer group">
+                <summary class="flex items-center justify-between font-bold text-slate-200 hover:text-white">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-book-medical text-cyan-400"></i>
+                        <span>急救隊員必備：5H5T 鑑別線索與 TRM 溝通句型對照表 (點擊展開)</span>
+                    </span>
+                    <i class="fa-solid fa-chevron-down group-open:rotate-180 transition text-slate-400"></i>
+                </summary>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 pt-3 border-t border-slate-800 text-sm text-slate-300">
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-teal-900/50 space-y-2">
+                        <div class="font-bold text-teal-300 text-base flex items-center gap-1.5">
+                            <i class="fa-solid fa-flask"></i> 5H 生理代謝因素與 TRM 應對：
+                        </div>
+                        <div>• <strong>Hypovolemia：</strong>隊長：「請給藥手建立雙管大口徑 IV，加壓灌注 0.9% NS 1000mL！」</div>
+                        <div>• <strong>Hypoxia：</strong>呼吸道手 Call-out：「確認氣管內管在 22cm、兩側對稱起伏，已接 100% 氧氣！」</div>
+                        <div>• <strong>Hydrogen Ion (酸中毒)：</strong>記錄員提醒：「ABG 顯示 pH 6.9，隊長考慮給予 Sodium Bicarbonate！」</div>
+                        <div>• <strong>Hypo/Hyperkalemia：</strong>隊長：「寬大 Sine wave，給藥手立即給予 Calcium Gluconate 10mL！」</div>
+                        <div>• <strong>Hypothermia：</strong>量測核心體溫，啟動溫熱液體與烤燈保溫。</div>
+                    </div>
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-amber-900/50 space-y-2">
+                        <div class="font-bold text-amber-300 text-base flex items-center gap-1.5">
+                            <i class="fa-solid fa-stethoscope"></i> 5T 物理創傷栓塞與 TRM 應對：
+                        </div>
+                        <div>• <strong>Tension Pneumothorax：</strong>呼吸道手 Call-out：「甦醒球阻力大、右側無呼吸音！」→ 隊長立斷：「立即執行針刺減壓！」</div>
+                        <div>• <strong>Tamponade (心包填塞)：</strong>超音波 POCUS 發現大量心包膜積水 → 隊長召集準備心包穿刺引流。</div>
+                        <div>• <strong>Toxins (中毒)：</strong>隊員主動回饋發現針孔或藥丸瓶 → 立即準備 Naloxone 或專屬解毒劑。</div>
+                        <div>• <strong>Thrombosis, Pulmonary (肺栓塞)：</strong>下肢水腫、突發休克 → 評估溶栓劑 (tPA) 或通知體外循環 (ECPR)。</div>
+                        <div>• <strong>Thrombosis, Coronary (心肌梗塞)：</strong>胸痛突發 OHCA → ROSC 後立即安排 12 導程 ECG 與評估心導管 PCI。</div>
+                    </div>
+                </div>
+            </details>
+        </section>
+
+        <!-- 頁尾版權保護 -->
+        <footer class="bg-quest-card border border-quest-border rounded-2xl p-4 text-center text-slate-400">
+            <div class="flex flex-wrap items-center justify-center gap-2">
+                <span class="font-bold text-white">ACLS-Megacode 急救戰鬥闖關包</span>
+                <span>•</span>
+                <span class="text-teal-400 font-bold">教材編撰與臨床審訂：專科護理師 曾妍鳳 製 (ACLS Instructor)</span>
+            </div>
+            <div class="text-xs text-slate-500 mt-1.5">
+                © 2025–2026 曾妍鳳 專科護理師 版權所有 • 僅供指定臨床課堂教學演練使用 • 嚴禁轉貼
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        // 9 大臨床盲抽情境題庫 + 2 大轉盤特別事件
+        const megacodeCases = [
+            {
+                name: "案例 1：侵入導管術後突發呼吸困難",
+                wheelLabel: "侵入導管術後突發呼吸困難",
+                category: "加護病房 / 術後情境",
+                initialRhythm: "無脈性電氣活動 (PEA)",
+                desc: "55 歲男性，剛於右側鎖骨下完成中心靜脈導管 (CVC) 置入，術後 10 分鐘突發嚴重吸不到氣、煩躁不安，隨後意識喪失倒地。初評頸動脈摸無脈搏，心電圖呈現 PEA。請團隊運用人型圖依序檢查，找出可逆死因！",
+                underlyingCause: "張力性氣胸 (Tension Pneumothorax)",
+                diagnostics: {
+                    pocus: {
+                        tag: "Lung Ultrasound",
+                        desc: "右側胸膜滑動徵 (Lung sliding) 完全消失，M-mode 呈現條碼徵 (Barcode sign / Stratosphere sign)，未見 Lung point。",
+                        key: "關鍵特徵：右胸胸膜滑動消失，大量高壓積氣"
+                    },
+                    ecg: {
+                        tag: "PEA / Tachycardia",
+                        desc: "竇性心律 125 bpm 但中心動脈完全摸無脈搏（電機械分離 PEA），肢體導程電壓微幅下降。",
+                        key: "關鍵特徵：心電圖有快速電信號但無任何心輸出量"
+                    },
+                    abg: {
+                        tag: "Severe Hypoxia",
+                        values: "pH: 7.22 | PaCO2: 56 mmHg | PaO2: 44 mmHg | HCO3-: 23 mEq/L | Lac: 5.8 mmol/L",
+                        interp: "極度低血氧合併急性高碳酸血症呼吸性酸中毒，乳酸上升提示循環衰竭。"
+                    }
+                },
+                assessmentData: {
+                    head: {
+                        name: "頭頸部 (Head & Neck)",
+                        tag: "Tracheal Deviation",
+                        finding: "頸靜脈明顯怒張 (JVD)；氣管觸診明顯偏向左側 (Trachea shifted to Left)；顏面發紺。",
+                        callout: "「報告隊長！病患氣管嚴重向左偏移，頸靜脈高度怒張，高度提示張力性氣胸！」"
+                    },
+                    lungs: {
+                        name: "胸廓與雙肺 (Chest & Lungs)",
+                        tag: "Unilateral Hyperresonance",
+                        finding: "右側胸壁過度膨脹且起伏減弱；右胸叩診呈明顯鼓音 (Hyperresonance)；聽診右側呼吸音完全消失，甦醒球壓擠阻力極高！",
+                        callout: "「報告隊長！通氣阻力極大，右肺完全聽不到呼吸音，右胸叩診鼓音！」"
+                    },
+                    heart: {
+                        name: "心臟與中央血管 (Heart & Vessels)",
+                        tag: "PEA / Distant Heart",
+                        finding: "心音微弱遙遠；中心動脈完全摸不到搏動；胸內高壓壓迫上下腔靜脈導致回心血流阻斷。",
+                        callout: "「報告隊長！中心動脈無脈搏，胸內高壓阻斷靜脈回流！」"
+                    },
+                    pelvis: {
+                        name: "腹部與骨盆 (Abdomen & Pelvis)",
+                        tag: "Normal",
+                        finding: "腹部平坦柔軟，肝脾無腫大；骨盆擠壓穩定無外傷出血。",
+                        callout: "「報告隊長！腹部柔軟，骨盆穩定無內出血。」"
+                    },
+                    limbs: {
+                        name: "四肢與周邊末梢 (Extremities)",
+                        tag: "Peripheral Shock",
+                        finding: "四肢冰冷蒼白，微血管充填時間 (CRT) > 3 秒；右上肢留置針處無滲血。",
+                        callout: "「報告隊長！四肢濕冷呈現休克狀態！」"
+                    },
+                    back: {
+                        name: "下肢與腰背 (Lower Limbs & Back)",
+                        tag: "No Trauma",
+                        finding: "背部皮膚完整，無穿刺傷，脊椎無壓痛或變形。",
+                        callout: "「報告隊長！背部完整無外傷。」"
+                    }
+                },
+                stages: [
+                    {
+                        title: "關卡 1：初評就位與 TRM 隊長指令",
+                        scenario: "病患無脈搏，心電圖呈現 PEA。按壓手已就位壓胸，隊長依循 TRM 領導原則，第一步應如何明確下達指令？",
+                        options: [
+                            { text: "對全場大喊：「有人快點拿去顫器，有人去打強心針！」", correct: false, reason: "❌ 違反 TRM 指令原則！未指名道姓、分工不明確，容易導致旁觀者效應。" },
+                            { text: "隊長雙手背後：「宜君持續壓胸；志偉負責頭部給氧並評估呼吸道；美玲建立 IV 並給予 Epinephrine 1mg；記錄員開始計時！」", correct: true, reason: "✅ 正確！落實 TRM 領導力：指名道姓、指定專責位置，建立清晰站位分工！" },
+                            { text: "隊長自己去翻藥車抽藥，讓隊員自行決定怎麼做", correct: false, reason: "❌ 隊長喪失全場宏觀視野 (Situational Awareness)，易陷入致命處置盲點。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 2：依據人型圖評估，聯想 5H5T 致命病因",
+                        scenario: "隊員點擊「頭頸」與「胸肺」人型圖，發現：【通氣阻力極大、右肺呼吸音消失、叩診鼓音、氣管偏左、頸靜脈怒張】。團隊討論這最可能是 5H5T 中的哪一項？",
+                        options: [
+                            { text: "5H：Hypovolemia (大量出血低血容)", correct: false, reason: "❌ 低血容時頸靜脈通常為扁平塌陷，且肺部呼吸音對稱，與現場徵象不符。" },
+                            { text: "5T：Tension Pneumothorax (右側張力性氣胸)", correct: true, reason: "✅ 完全正確！CVC 置入後、單側呼吸音消失、叩診鼓音、氣管偏移、頸靜脈怒張，皆為張力性氣胸之教科書級鐵證！" },
+                            { text: "5T：Thrombosis, Coronary (急性冠狀動脈栓塞)", correct: false, reason: "❌ 冠狀動脈栓塞不會造成通氣阻力極大與單側呼吸音完全消失。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 3：關鍵逆轉處置與 Closed-Loop 閉環回報",
+                        scenario: "確定為張力性氣胸後，隊長指派呼吸道手執行減壓。呼吸道手執行後，標準的 TRM 閉環確認應如何回報？",
+                        options: [
+                            { text: "針刺穿透後不發一語，轉頭去拿胸管", correct: false, reason: "❌ 未完成閉環式回報，隊長無從得知病患胸內減壓成效。" },
+                            { text: "大聲 Call-out：「報告隊長！已於右側第二肋間完成針刺減壓，聽到大量洩氣聲，通氣阻力已明顯下降！」", correct: true, reason: "✅ 正確！完美閉環溝通：回報動作完成、回報臨床反應（洩氣）、通報生理改善！" },
+                            { text: "「隊長你確定要扎針嗎？我不敢扎」", correct: false, reason: "❌ 延誤致命病因處置。" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "案例 2：慢性腎病透析病患意識喪失",
+                wheelLabel: "透析病患突發意識喪失",
+                category: "急診檢傷情境",
+                initialRhythm: "極度寬大畸形 PEA (Sine Wave)",
+                desc: "68 歲洗腎女性，因連續三天未洗腎被家屬送醫，於檢傷突然翻白眼喪失意識。監視器呈現極度寬大且畸形的連續波形，脈搏摸無。請團隊運用人型圖依序檢查，找出可逆死因！",
+                underlyingCause: "嚴重高血鉀 (Hyperkalemia)",
+                diagnostics: {
+                    pocus: {
+                        tag: "Cardiac Echo",
+                        desc: "四腔室心臟超音波可見雙心室瀰漫性嚴重蠕動不良，無心包積水，下腔靜脈 (IVC) 飽滿無塌陷 (IVC 2.2cm, collapsibility <15%)。",
+                        key: "關鍵特徵：心室收縮力全面嚴重抑制，體液容量過負荷"
+                    },
+                    ecg: {
+                        tag: "Classic Sine Wave",
+                        desc: "P 波完全消失，QRS 極度寬大畸形（QRS 寬度 > 240ms）與 T 波融合，呈現教科書級典型正弦波 (Sine Wave)！",
+                        key: "關鍵特徵：高血鉀毒性造成心臟電氣傳導幾乎完全癱瘓"
+                    },
+                    abg: {
+                        tag: "Severe Hyperkalemia",
+                        values: "pH: 7.14 | K+: 8.9 mEq/L (危急值) | Na+: 132 mEq/L | HCO3-: 11 mEq/L | Lac: 4.2",
+                        interp: "危急值高血鉀 (8.9 mEq/L) 合併重度代謝性酸中毒，心肌細胞膜即將完全去極化猝死。"
+                    }
+                },
+                assessmentData: {
+                    head: {
+                        name: "頭頸部 (Head & Neck)",
+                        tag: "Uremic Stigma",
+                        finding: "意識深度昏迷，口唇乾燥，呼氣帶有微弱尿毒味 (Uremic fetor)；頸靜脈無過度怒張，氣管置中無歪斜。",
+                        callout: "「報告隊長！氣管置中，無氣胸徵兆，病患昏迷且帶尿毒氣味！」"
+                    },
+                    lungs: {
+                        name: "胸廓與雙肺 (Chest & Lungs)",
+                        tag: "Mild Crackles",
+                        finding: "胸廓兩側起伏對稱；聽診雙下肺有些許濕囉音 (Basilar crackles)，甦醒球壓擠阻力適中，無哮鳴音。",
+                        callout: "「報告隊長！雙側肺起伏對稱，雙下肺微濕囉音，通氣順暢。」"
+                    },
+                    heart: {
+                        name: "心臟與中央血管 (Heart & Vessels)",
+                        tag: "Sine Wave PEA",
+                        finding: "監視器呈現寬大畸形 Sine wave；中心動脈無脈搏；聽診心音規則但無灌流。",
+                        callout: "「報告隊長！監視器波形極度寬大，呈現高血鉀典型的 Sine wave！」"
+                    },
+                    pelvis: {
+                        name: "腹部與骨盆 (Abdomen & Pelvis)",
+                        tag: "Soft",
+                        finding: "腹部微脹但柔軟，左下腹無壓痛；恥骨上叩診無尿液滯留；未置入導尿管。",
+                        callout: "「報告隊長！腹部柔軟，骨盆穩定無外傷出血徵候。」"
+                    },
+                    limbs: {
+                        name: "四肢與周邊末梢 (Extremities)",
+                        tag: "AV Fistula",
+                        finding: "左前臂可見洗腎用動靜脈瘻管 (AV Fistula)，觸摸無顫音 (No thrill)；雙下肢中度凹陷性水腫 (2+ Pitting edema)。",
+                        callout: "「報告隊長！左手有洗腎動靜脈瘻管，伴隨雙下肢水腫，高度支持洗腎病患高血鉀！」"
+                    },
+                    back: {
+                        name: "下肢與腰背 (Lower Limbs & Back)",
+                        tag: "No Trauma",
+                        finding: "腰背部平整無脊椎壓痛，無外傷或皮下出血點。",
+                        callout: "「報告隊長！背部平整無異常。」"
+                    }
+                },
+                stages: [
+                    {
+                        title: "關卡 1：依據人型圖線索，鑑別 5H5T 病因",
+                        scenario: "隊員點擊「四肢」與「心臟」，發現【左手洗腎瘻管、雙腳水腫、監視器呈極度寬大 Sine wave】。這最符合 5H5T 中的哪一種？",
+                        options: [
+                            { text: "5H：Hypothermia (低體溫)", correct: false, reason: "❌ 低體溫心電圖常見 J 波 (Osborn wave) 與心搏過緩，不會出現典型洗腎水腫與 Sine wave。" },
+                            { text: "5H：Hyperkalemia (嚴重高血鉀)", correct: true, reason: "✅ 正確！透析延遲 + 瘻管 + 下肢水腫 + 寬大 Sine Wave PEA，為高血鉀心臟毒性之經典表現！" },
+                            { text: "5T：Toxins (三環抗憂鬱劑中毒)", correct: false, reason: "❌ 病患為洗腎病史且有瘻管，應優先考慮代謝因素 5H 之高血鉀。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 2：TRM 閉環給藥指令 (Closed-Loop)",
+                        scenario: "隊長下令穩定心肌細胞膜：「美玲，請立即給予 Calcium Chloride 1g (或 Calcium Gluconate 3g) 靜脈注射！」美玲標準的 TRM 覆誦應為：",
+                        options: [
+                            { text: "「收到，立即給予 Calcium Chloride 1g 靜脈注射推注！」", correct: true, reason: "✅ 正確！標準 TRM 閉環式回覆：覆誦藥名、劑量與給藥途徑，確保訊息完全零落差！" },
+                            { text: "點點頭不說話，直接抽藥推注", correct: false, reason: "❌ 容易造成給錯藥物或劑量而全隊不知情。" },
+                            { text: "「好的，我給了」", correct: false, reason: "❌ 未覆誦藥品與劑量，無法達成雙重查對 (Cross-check)。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 3：跨團隊 SBAR 溝通與根本處置",
+                        scenario: "鈣離子推注後波形變窄並摸到脈搏，血壓 88/50 mmHg。隊長接下來的 TRM 跨團隊溝通重點為：",
+                        options: [
+                            { text: "運用 SBAR 模式立即致電血液透析室與腎臟科，安排緊急洗腎 (HD/CVVH)", correct: true, reason: "✅ 正確！利用 SBAR 迅速啟動跨團隊資源，洗腎才是清除體內過量鉀離子的根本之道！" },
+                            { text: "直接把病患轉到一般病房觀察", correct: false, reason: "❌ 極度危險！嚴重高血鉀隨時會再度復發致命心律不整。" },
+                            { text: "立即停止所有靜脈給藥與監測", correct: false, reason: "❌ 仍需密切維持降鉀藥物與生理監視。" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "案例 3：癌末胸悶突發低血壓倒地",
+                wheelLabel: "癌症胸痛突發低血壓倒地",
+                category: "腫瘤科 / 急診情境",
+                initialRhythm: "低電壓快速 PEA (Low Voltage)",
+                desc: "72 歲男性肺癌合併心包膜積水病患，突發劇烈胸悶、冒冷汗呼吸困難，數分鐘後意識喪失倒地。初評頸動脈摸無搏動，心電圖 QRS 波幅極小。請團隊運用人型圖依序檢查，找出可逆死因！",
+                underlyingCause: "心包填塞 (Cardiac Tamponade)",
+                diagnostics: {
+                    pocus: {
+                        tag: "Subxiphoid View",
+                        desc: "劍突下視圖清晰可見心包腔大量無回音暗區 (Anichoic space >2.5cm)，右心室舒張期早期塌陷 (RV diastolic collapse)，IVC 擴大膨脹無起伏。",
+                        key: "關鍵特徵：大量心包積液壓迫右心室，回心血流完全阻斷"
+                    },
+                    ecg: {
+                        tag: "Electrical Alternans",
+                        desc: "所有肢體導程呈現低電壓 (QRS < 5mm)，伴隨 QRS 振幅高低交替出現之電交替 (Electrical Alternans)！",
+                        key: "關鍵特徵：心臟在心包積水中擺動導致心電軸交替變化"
+                    },
+                    abg: {
+                        tag: "Obstructive Shock",
+                        values: "pH: 7.28 | PaCO2: 38 mmHg | PaO2: 68 mmHg | HCO3-: 17 mEq/L | Lac: 7.2 mmol/L",
+                        interp: "阻塞性休克導致重度組織灌流不足，乳酸顯著堆積。"
+                    }
+                },
+                assessmentData: {
+                    head: {
+                        name: "頭頸部 (Head & Neck)",
+                        tag: "Marked JVD",
+                        finding: "頸靜脈高度怒張 (JVD)，隨吸氣更加飽滿 (Kussmaul's sign)；臉色發紺，眼結膜無蒼白；氣管正中無歪斜。",
+                        callout: "「報告隊長！病患頸靜脈極度怒張，氣管置中無歪斜！」"
+                    },
+                    lungs: {
+                        name: "胸廓與雙肺 (Chest & Lungs)",
+                        tag: "Clear Bilaterally",
+                        finding: "雙胸起伏對稱；聽診雙肺呼吸音清晰，兩側皆無囉音或呼吸音消失，完全排除了張力性氣胸！",
+                        callout: "「報告隊長！雙肺呼吸音完全對稱且乾淨，可排除張力性氣胸！」"
+                    },
+                    heart: {
+                        name: "心臟與中央血管 (Heart & Vessels)",
+                        tag: "Distant Heart Sounds",
+                        finding: "聽診心音極度遙遠模糊 (Muffled heart sounds)；脈搏完全摸不到；呈現低血壓、頸靜脈怒張、心音遙遠之 Beck's 三徵候！",
+                        callout: "「報告隊長！心音極度遙遠模糊，呈現典型 Beck's 三徵候，高度懷疑心包填塞！」"
+                    },
+                    pelvis: {
+                        name: "腹部與骨盆 (Abdomen & Pelvis)",
+                        tag: "Hepatomegaly",
+                        finding: "右上腹觸診肝臟輕微腫大，無反跳痛；骨盆穩定。",
+                        callout: "「報告隊長！腹部無急性腹膜炎，骨盆穩定。」"
+                    },
+                    limbs: {
+                        name: "四肢與周邊末梢 (Extremities)",
+                        tag: "Peripheral Cyanosis",
+                        finding: "四肢發紺、肢端冰涼濕冷，橈動脈摸不到搏動。",
+                        callout: "「報告隊長！末梢嚴重低灌流，微血管充填時間大於 5 秒！」"
+                    },
+                    back: {
+                        name: "下肢與腰背 (Lower Limbs & Back)",
+                        tag: "Stable",
+                        finding: "翻身檢查背部無異常，脊椎無壓痛。",
+                        callout: "「報告隊長！背部無外傷。」"
+                    }
+                },
+                stages: [
+                    {
+                        title: "關卡 1：TRM 團隊短會 (Huddle 快速討論)",
+                        scenario: "隊員點擊「頭頸」與「心臟」，發現【頸靜脈極度怒張、氣管正中、雙肺音乾淨、心音極微弱遙遠】。隊長應如何召集團隊達成共識？",
+                        options: [
+                            { text: "發動 10 秒 TRM Huddle：「團隊注意！目前有 Beck's 三徵候且肺音清晰，高度懷疑 5T 心包填塞，請立即推 POCUS 超音波！」", correct: true, reason: "✅ 正確！TRM 核心短會 (Huddle)：簡短、明確、同步團隊大腦思維與下一步處置策略！" },
+                            { text: "什麼都不說，自己一邊壓胸一邊默默思考", correct: false, reason: "❌ 團隊成員陷入迷航，無法提前準備穿刺裝備。" },
+                            { text: "直接認定是張力性氣胸並立刻右胸扎針", correct: false, reason: "❌ 錯誤！雙肺呼吸音乾淨且氣管正中，非氣胸！盲目扎針有害。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 2：狀況監測與落實兩次挑戰 (Two-Challenge Rule)",
+                        scenario: "超音波證實大量心包積水。隊長指示穿刺，若隊員發現穿刺長針包裝破損或型號不對，隊員如何落實兩次挑戰原則？",
+                        options: [
+                            { text: "隊員立即堅定發聲：「隊長，目前的穿刺針長度不足，我建議換用專用穿刺長針！」", correct: true, reason: "✅ 正確！落實 TRM 堅持與維護病人安全 (Advocacy & Assertion)，勇敢指出安全疑慮！" },
+                            { text: "明知針頭拿錯也默默遞給隊長", correct: false, reason: "❌ 違反 TRM 團隊安全互鎖防護機制。" },
+                            { text: "轉頭離開急救現場", correct: false, reason: "❌ 嚴重失職。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 3：穿刺抽吸後 ROSC 與交班 SBAR",
+                        scenario: "抽吸出 60mL 積血後，病患摸到頸動脈搏，血壓 96/60 mmHg。隊長準備將病患轉送加護病房 (ICU)，標準的 SBAR 交班架構為：",
+                        options: [
+                            { text: "S (PEA 復甦成功) + B (肺癌心包填塞) + A (穿刺抽吸 60mL，目前 BP 96/60) + R (建議進 ICU 密切監測引流量與動脈管路)", correct: true, reason: "✅ 正確！標準 TRM/SBAR 結構化交班，確保病人安全交接無斷層！" },
+                            { text: "「病患是肺癌，剛剛急救穿刺好了，你們收一下」", correct: false, reason: "❌ 訊息破碎，未包含情境、背景、評估與具體建議。" },
+                            { text: "等病人送到 ICU 門口再隨便口頭講兩句", correct: false, reason: "❌ 嚴重違反應急醫療轉送規範。" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "案例 4：重大車禍骨折轉送途中休克",
+                wheelLabel: "重大外傷轉送突發休克",
+                category: "創傷急救情境",
+                initialRhythm: "快速細小 PEA (心律 140 轉無脈)",
+                desc: "35 歲外傷骨盆骨折男性，急診轉送途中血壓由 70/40 驟降為零，肢體蒼白濕冷，頸動脈摸無脈搏，心電圖呈現快速但極細小的 QRS 波群。請團隊運用人型圖依序檢查，找出可逆死因！",
+                underlyingCause: "嚴重低血容休克 (Hypovolemia)",
+                diagnostics: {
+                    pocus: {
+                        tag: "eFAST Trauma",
+                        desc: "eFAST 超音波骨盆腔與脾腎窩處見游離液體暗區；下腔靜脈 (IVC) 完全扁平黏合呈縫隙狀 (Flat IVC, 完全塌陷)。",
+                        key: "關鍵特徵：血管內容積極度空乏，心室空轉過度收縮"
+                    },
+                    ecg: {
+                        tag: "Narrow Tachy PEA",
+                        desc: "極窄且極細小 QRS 波形，心跳 142 bpm 快速空轉，無任何有效機械博動輸出。",
+                        key: "關鍵特徵：低血容心室空腔代償性竇速轉為細小 PEA"
+                    },
+                    abg: {
+                        tag: "Hemorrhagic Shock",
+                        values: "pH: 7.08 | Hb: 4.8 g/dL (危急值) | HCO3-: 10 mEq/L | Lac: 11.4 mmol/L | Base Excess: -16",
+                        interp: "極重度失血性休克致死性三聯徵（低體溫、酸中毒、嚴重貧血），需立即啟動大量輸血協定 MTP！"
+                    }
+                },
+                assessmentData: {
+                    head: {
+                        name: "頭頸部 (Head & Neck)",
+                        tag: "Flat Neck Veins",
+                        finding: "眼瞼結膜極度蒼白 (Pale conjunctiva)；頸靜脈完全塌陷平坦 (Flat neck veins)，氣管置中無偏移。",
+                        callout: "「報告隊長！結膜極度蒼白，頸靜脈完全塌陷，高度提示嚴重失血/低血容！」"
+                    },
+                    lungs: {
+                        name: "胸廓與雙肺 (Chest & Lungs)",
+                        tag: "Clear Breath Sounds",
+                        finding: "雙側胸壁起伏對稱，雙側呼吸音清晰乾淨，甦醒球阻力輕，無氣胸徵象。",
+                        callout: "「報告隊長！雙側肺音清晰，通氣良好無氣胸！」"
+                    },
+                    heart: {
+                        name: "心臟與中央血管 (Heart & Vessels)",
+                        tag: "Empty Heart",
+                        finding: "心音極快速且空洞微弱，中心動脈完全摸不到搏動，心臟如同空轉抽水機。",
+                        callout: "「報告隊長！心血管極度欠缺容量，中心脈搏摸無！」"
+                    },
+                    pelvis: {
+                        name: "腹部與骨盆 (Abdomen & Pelvis)",
+                        tag: "Pelvic Instability",
+                        finding: "腹部膨隆堅硬；雙手骨盆擠壓試驗 (Pelvic rock) 出現明顯骨擦音且骨盆結構位移不穩定！大量內出血隱藏點！",
+                        callout: "「報告隊長！骨盆嚴重骨折位移不穩定，高度懷疑骨盆腔大量內出血引發低血容休克！」"
+                    },
+                    limbs: {
+                        name: "四肢與周邊末梢 (Extremities)",
+                        tag: "Collapsed Veins",
+                        finding: "全身體表血管完全萎陷，皮膚蒼白如紙，觸摸極度濕冷；四肢無法打入細針。",
+                        callout: "「報告隊長！外周血管完全塌陷，打不上細針，建議立即打骨內針 (IO)！」"
+                    },
+                    back: {
+                        name: "下肢與腰背 (Lower Limbs & Back)",
+                        tag: "Flank Ecchymosis",
+                        finding: "腰部兩側可見微弱挫傷瘀青 (Grey Turner's sign)，提示後腹膜腔出血可能。",
+                        callout: "「報告隊長！腰部有鈍挫傷瘀青，懷疑後腹膜腔血腫！」"
+                    }
+                },
+                stages: [
+                    {
+                        title: "關卡 1：TRM 相互支援建立骨內通路 (IO)",
+                        scenario: "病患血管完全塌陷，給藥手嘗試 10 秒打不上 IV。此時另一位隊員依據 TRM 應如何提供任務支援 (Task Assistance)？",
+                        options: [
+                            { text: "在旁邊嘲笑：「你打針技術真差」", correct: false, reason: "❌ 嚴重破壞 TRM 團隊協作文化。" },
+                            { text: "主動支援：「美玲我來準備骨內針 (IO) 槍，妳固定肢體，我們立即打脛骨 IO！」", correct: true, reason: "✅ 正確！落實 TRM 相互支援 (Task Assistance)：主動察覺隊友困難並及時提供替代方案！" },
+                            { text: "轉頭去跟家屬聊天", correct: false, reason: "❌ 忽略現場急救迫切性。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 2：人型圖「骨盆」線索與 5H5T 聯想",
+                        scenario: "隊員點擊「骨盆」與「頭頸」，發現【骨盆擠壓不穩定、結膜蒼白、頸靜脈扁平塌陷】。這明確指出 5H5T 中的哪一項？",
+                        options: [
+                            { text: "5H：Hypovolemia (骨盆大量內出血引起低血容休克)", correct: true, reason: "✅ 正確！骨盆骨折為隱藏性大量出血重災區，失血可達 2000-3000mL，導致極度低血容休克！" },
+                            { text: "5T：Tension Pneumothorax (張力性氣胸)", correct: false, reason: "❌ 肺部呼吸音對稱清晰，且頸靜脈扁平，排除張力性氣胸。" },
+                            { text: "5H：Hyperkalemia (高血鉀)", correct: false, reason: "❌ 外傷急症失血，頸靜脈塌陷，與高血鉀無關。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 3：大量輸血協定與骨盆固定協作",
+                        scenario: "隊長下令：「美玲立即啟動大量輸血協定 (MTP)，志偉與宜君上骨盆固定帶 (Pelvic Binder)！」團隊應如何協作？",
+                        options: [
+                            { text: "一人負責軸心翻身並口頭報數，另一人精準將固定帶穿過大轉子 (Greater Trochanter) 扣緊，給藥手閉環覆誦啟動 MTP", correct: true, reason: "✅ 正確！跨專業動作同步、精確固定於大轉子，並以閉環溝通完成大量輸血啟動！" },
+                            { text: "隨便把固定帶綁在腰部肚臍上方", correct: false, reason: "❌ 位置錯誤！骨盆帶必須位於大轉子處才具備止血壓迫效果。" },
+                            { text: "只給予生理食鹽水，不啟動輸血", correct: false, reason: "❌ 嚴重外傷大量失血必須輸血，單純給水會導致稀釋性凝血病變。" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "案例 5：下肢骨折術後突發胸悶發紺",
+                wheelLabel: "骨折術後突發胸悶發紺",
+                category: "骨科病房情境",
+                initialRhythm: "竇性心搏過速轉 PEA (HR 135 bpm)",
+                desc: "62 歲女性，右側股骨骨折術後臥床第 4 天，下床如廁時突發嚴重胸悶、呼吸急促與發紺，數十秒後眼前發黑倒地。初評摸無頸動脈搏，監視器呈現竇速突然轉為無灌流 PEA。請團隊運用人型圖依序檢查，找出可逆死因！",
+                underlyingCause: "大片肺栓塞 (Pulmonary Embolism)",
+                diagnostics: {
+                    pocus: {
+                        tag: "Focus Echo",
+                        desc: "超音波右心室急遽擴大，RV/LV 比例 > 1.0，室中隔於舒張期與收縮期均壓扁左心室呈典型「D-shaped LV」！右室心尖部仍有收縮但游離壁運動低下 (McConnell's sign)。",
+                        key: "關鍵特徵：急性右心室擴大衰竭，巨大肺動脈血栓阻塞"
+                    },
+                    ecg: {
+                        tag: "S1Q3T3 Pattern",
+                        desc: "Lead I 出現深 S 波、Lead III 出現 Q 波與倒置 T 波（典型 S1Q3T3 急性肺心症表徵），心跳 136 bpm PEA。",
+                        key: "關鍵特徵：右心室急性壓力過負荷心電圖表現"
+                    },
+                    abg: {
+                        tag: "Severe V/Q Mismatch",
+                        values: "pH: 7.21 | PaCO2: 28 mmHg | PaO2: 38 mmHg (100% O2 下) | A-a gradient: 顯著擴大 | Lac: 6.5",
+                        interp: "巨大通氣灌流不匹配 (V/Q Mismatch)，重度難治性缺氧提示大血管截斷性血栓。"
+                    }
+                },
+                assessmentData: {
+                    head: {
+                        name: "頭頸部 (Head & Neck)",
+                        tag: "Severe Cyanosis",
+                        finding: "顏面與嘴唇極度發紺；頸靜脈明顯怒張充盈；氣管正中無偏斜。",
+                        callout: "「報告隊長！病患嘴唇嚴重發紺，頸靜脈怒張，氣管置中！」"
+                    },
+                    lungs: {
+                        name: "胸廓與雙肺 (Chest & Lungs)",
+                        tag: "Clear But Hypoxic",
+                        finding: "雙胸起伏完全對稱；聽診雙肺呼吸音清晰乾淨，無囉音亦無呼吸音減弱；通氣順暢但 SpO2 無法測得。",
+                        callout: "「報告隊長！雙肺呼吸音對稱且清晰，無氣胸徵候！」"
+                    },
+                    heart: {
+                        name: "心臟與中央血管 (Heart & Vessels)",
+                        tag: "Right Heart Strain",
+                        finding: "床邊超音波 POCUS 顯示右心室極度擴大 (McConnell's sign)，室中隔向左心室擠壓 (D-sign)！中心動脈摸無搏動。",
+                        callout: "「報告隊長！超音波發現急性嚴重右心擴大衰竭，右心室壓迫左心室！」"
+                    },
+                    pelvis: {
+                        name: "腹部與骨盆 (Abdomen & Pelvis)",
+                        tag: "Soft & Flat",
+                        finding: "腹部平坦柔軟，肝脾無明顯壓痛；骨盆穩定無外傷出血。",
+                        callout: "「報告隊長！腹部與骨盆無內出血表現。」"
+                    },
+                    limbs: {
+                        name: "四肢與周邊末梢 (Extremities)",
+                        tag: "Asymmetric Leg Swelling",
+                        finding: "右下肢明顯比左下肢粗脹，右小腿有凹陷性水腫與充血發紅；術後缺乏抗凝血預防。",
+                        callout: "「報告隊長！右下肢明顯腫脹不對稱，高度懷疑深層靜脈血栓 (DVT) 脫落造成大片肺栓塞！」"
+                    },
+                    back: {
+                        name: "下肢與腰背 (Lower Limbs & Back)",
+                        tag: "Surgical Incision",
+                        finding: "右髖部有手術縫合傷口，敷料乾淨無外滲；腰背部無皮下氣腫。",
+                        callout: "「報告隊長！手術傷口乾淨無大出血。」"
+                    }
+                },
+                stages: [
+                    {
+                        title: "關卡 1：依據人型圖線索，鑑別 5H5T 病因",
+                        scenario: "隊員點擊「四肢」與「心臟」，發現【右下肢明顯腫脹 DVT 表徵、雙肺呼吸音清晰但極度發紺、超音波右心擴大】。這高度提示 5H5T 中的哪一項？",
+                        options: [
+                            { text: "5T：Thrombosis, Pulmonary (急性大片肺栓塞)", correct: true, reason: "✅ 正確！臥床病史 + 單側下肢腫脹 DVT + 突發發紺 PEA + 急性右心擴大，為急性致命性大片肺栓塞之典型表現！" },
+                            { text: "5H：Hypoxia (單純呼吸道異物缺氧)", correct: false, reason: "❌ 呼吸道通暢且雙肺呼吸音清晰，非異物阻塞。" },
+                            { text: "5H：Hydrogen Ion (代謝性酸中毒)", correct: false, reason: "❌ 酸中毒不會出現單側急性下肢腫脹與急性肺血管阻塞。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 2：TRM 危機應變與溶栓決策 (Fibrinolysis / ECPR)",
+                        scenario: "隊長研判為高危險急性肺栓塞心臟驟停，應如何下達緊急指令？",
+                        options: [
+                            { text: "指派美玲準備重組組織型纖溶酶原激活劑 (tPA / Alteplase 50mg) 快速輸注，並同步通知體外循環 (ECMO/ECPR) 團隊", correct: true, reason: "✅ 正確！心臟驟停懷疑肺栓塞時給予溶栓劑為急救指引建議，並爭取 ECPR 建立體外循環！" },
+                            { text: "單純打 Epinephrine，不考慮任何血栓溶解治療", correct: false, reason: "❌ 肺血管完全被巨大血栓堵死，單純打升壓劑無法打通肺循環。" },
+                            { text: "立刻停下 CPR，先推病患去照胸部電腦斷層 (CT)", correct: false, reason: "❌ 致命禁忌！無脈搏急救中嚴禁運送至放射科照 CT！" }
+                        ]
+                    },
+                    {
+                        title: "關卡 3：溶栓持續壓胸與延長復甦時間",
+                        scenario: "給予 tPA 溶栓藥物後，計時員提醒按壓已進行 15 分鐘，隊長在 TRM 溝通中應向團隊宣導什麼？",
+                        options: [
+                            { text: "宣導：「團隊注意，肺栓塞給予溶栓劑後，藥物溶解血栓需要時間，我們 CPR 需持續高品質至少 60–90 分鐘！」", correct: true, reason: "✅ 正確！肺栓塞溶栓急救原則需延長心肺復甦時間以利血栓融解，維持團隊士氣與體力輪替！" },
+                            { text: "「15 分鐘沒救起來就直接宣布急救無效死亡」", correct: false, reason: "❌ 錯誤！溶栓藥物作用尚未發揮，過早放棄將喪失生機。" },
+                            { text: "叫所有人停止換手，由一人壓到底", correct: false, reason: "❌ 違反高品質 CPR 規範。" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "案例 6：高血壓病患吞服大量藥物後昏迷",
+                wheelLabel: "高血壓吞服過量藥物倒地",
+                category: "急診毒物情境",
+                initialRhythm: "交界性嚴重心搏過緩轉 PEA (HR 28 bpm)",
+                desc: "58 歲男性，患有頑固性高血壓，與家人爭執後吞服整罐不明降血壓藥物。1 小時後被家屬發現全身濕冷、喚不醒。救護車送抵時收縮壓僅 50 mmHg，隨後脈搏消失，監視器為極緩慢交界性節律。請團隊運用人型圖依序檢查，找出可逆死因！",
+                underlyingCause: "藥物中毒 / 鈣離子阻斷劑 (Toxins / CCB Overdose)",
+                diagnostics: {
+                    pocus: {
+                        tag: "Myocardial Hypokinesis",
+                        desc: "超音波顯示全心肌收縮力極度低下，射血分數 (EF) 估計僅剩 <20%，主動脈根部瓣膜開放幅度極小，IVC 充盈擴張。",
+                        key: "關鍵特徵：心肌細胞鈣通道被強烈阻斷，心臟收縮近乎停滯"
+                    },
+                    ecg: {
+                        tag: "Severe Junctional Brady",
+                        desc: "交界性心律，心跳僅 26-28 bpm，PR 間期嚴重延長進展為三度房室傳導阻滯 (3rd AV Block)，伴隨廣泛 ST-T 變化。",
+                        key: "關鍵特徵：房室結 (AV Node) 傳導完全被藥物抑制"
+                    },
+                    abg: {
+                        tag: "Cardiogenic & Metabolic",
+                        values: "pH: 7.16 | PaCO2: 44 mmHg | PaO2: 82 mmHg | 血糖: 412 mg/dL (顯著高血糖) | Lac: 8.4",
+                        interp: "高血糖伴重度乳酸堆積！CCB 中毒特徵性阻斷胰島細胞鈣通道抑制胰島素釋放。"
+                    }
+                },
+                assessmentData: {
+                    head: {
+                        name: "頭頸部 (Head & Neck)",
+                        tag: "Normal Pupils & No JVD",
+                        finding: "雙側瞳孔約 3.0mm 對光反應微弱，無針尖縮瞳；口腔內可見白色藥丸殘渣與粉末！頸靜脈無怒張，氣管置中。",
+                        callout: "「報告隊長！病患口腔內發現大量白色藥丸殘留物，高度懷疑藥物中毒！」"
+                    },
+                    lungs: {
+                        name: "胸廓與雙肺 (Chest & Lungs)",
+                        tag: "Clear Airway",
+                        finding: "雙側呼吸音清晰乾淨，抽吸出微量藥物溶解物；甦醒球通氣良好無阻力。",
+                        callout: "「報告隊長！雙肺呼吸音對稱，通氣順暢。」"
+                    },
+                    heart: {
+                        name: "心臟與中央血管 (Heart & Vessels)",
+                        tag: "Severe Bradycardia",
+                        finding: "心音極其緩慢沉悶，HR 26-28 bpm；脈搏摸無；血糖機檢測高達 380 mg/dL（CCB 中毒典型的高血糖反應）！",
+                        callout: "「報告隊長！心跳極慢且合併顯著高血糖 (380 mg/dL)，高度提示鈣離子阻斷劑 (CCB) 中毒！」"
+                    },
+                    pelvis: {
+                        name: "腹部與骨盆 (Abdomen & Pelvis)",
+                        tag: "Empty Pill Bottle",
+                        finding: "腹部柔軟無反跳痛；家屬帶來空藥瓶，標籤顯示為「Amlodipine 5mg × 60 顆」全部空了！",
+                        callout: "「報告隊長！家屬確認吞服整瓶 Amlodipine (CCB) 共 300mg！」"
+                    },
+                    limbs: {
+                        name: "四肢與周邊末梢 (Extremities)",
+                        tag: "Severe Vasodilation",
+                        finding: "周邊血管極度擴張麻痺，四肢溫熱轉濕冷；血壓完全測量不到。",
+                        callout: "「報告隊長！周邊血管阻力極低，呈現血管完全擴張性休克！」"
+                    },
+                    back: {
+                        name: "下肢與腰背 (Lower Limbs & Back)",
+                        tag: "Normal",
+                        finding: "背部平整，無外傷或皮下出血點。",
+                        callout: "「報告隊長！背部平整無外傷。」"
+                    }
+                },
+                stages: [
+                    {
+                        title: "關卡 1：依據人型圖線索，鑑別 5H5T 病因",
+                        scenario: "隊員點擊「頭頸」與「腹部」，發現【口腔藥丸粉末、整罐 Amlodipine 空瓶、嚴重交界性慢心律合併顯著高血糖】。這屬於 5H5T 中的哪一項？",
+                        options: [
+                            { text: "5T：Toxins (鈣離子阻斷劑 CCB 中毒)", correct: true, reason: "✅ 正確！Amlodipine (CCB) 過量會抑制心肌收縮、擴張血管並抑制胰島素釋放導致典型高血糖！" },
+                            { text: "5H：Hypoglycemia (嚴重低血糖昏迷)", correct: false, reason: "❌ 血糖高達 380 mg/dL，完全排除低血糖。" },
+                            { text: "5T：Tamponade (心包填塞)", correct: false, reason: "❌ 頸靜脈無怒張，無心包積水徵候。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 2：專屬解毒劑與 TRM 閉環下單",
+                        scenario: "針對大劑量 CCB 中毒引發之心臟驟停，隊長除了標準 CPR 外，應如何下達特異性解毒處置？",
+                        options: [
+                            { text: "「美玲，立即靜脈推注 10% Calcium Chloride 1g (或 Calcium Gluconate 3g)，並準備高劑量胰島素療法 (HIET) 與升壓劑！」", correct: true, reason: "✅ 正確！鈣離子補充能克服受體拮抗，高劑量胰島素療法 (HIET, High-dose Insulin Euglycemic Therapy) 是 CCB 中毒的黃金治療！" },
+                            { text: "給予大量活性碳洗胃，不管心跳血壓", correct: false, reason: "❌ 心臟驟停時嚴禁強行灌洗胃，極易造成胃內容物逆流吸入性肺炎窒息！" },
+                            { text: "「這個沒救了，等藥物自行代謝」", correct: false, reason: "❌ 怠慢處置，致死率極高。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 3：相互支援與升壓輔助協作",
+                        scenario: "鈣離子給予後脈搏仍微弱，隊長指派 Norepinephrine 與高劑量胰島素合併滴注，護理師如何落實閉環雙重查核？",
+                        options: [
+                            { text: "雙人覆誦胰島素與高濃度葡萄糖劑量，確認動脈導管與多路專用靜脈通路暢通，大聲報數回報數值", correct: true, reason: "✅ 正確！高劑量胰島素治療為高警訊處置，雙人查核與通報能杜絕給藥錯誤與嚴重低血糖！" },
+                            { text: "隨便拿隻普通針頭推進去，不監測血糖", correct: false, reason: "❌ 極易引發致死性低血糖與管路外滲。" },
+                            { text: "私自將升壓劑關閉", correct: false, reason: "❌ 血管完全擴張下關閉升壓劑將導致永久性心跳停止。" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "案例 7：聚餐進食突發手抓咽喉發紺倒地",
+                wheelLabel: "進食突發噎嗆發紺倒地",
+                category: "公眾場所 / 餐廳情境",
+                initialRhythm: "無脈心律 PEA (極度缺氧心搏過緩)",
+                desc: "65 歲男性於牛排館用餐，大笑時突現驚恐神情、雙手緊掐頸部喉嚨（Universal Choking Sign），無法發出聲音，數十秒後臉色鐵青發紺倒地、停止呼吸。初評頸動脈摸無搏動，監視器為 PEA。請團隊運用人型圖依序檢查，找出可逆死因！",
+                underlyingCause: "呼吸道異物阻塞致嚴重缺氧 (Hypoxia / Airway Obstruction)",
+                diagnostics: {
+                    pocus: {
+                        tag: "Airway Ultrasound",
+                        desc: "喉部超音波可見聲門上方有高回音團塊伴隨聲影 (Acoustic shadow)，食道空虛，雙肺無滑動徵因無氣流進出。",
+                        key: "關鍵特徵：聲門上大塊高回音固體異物完全填塞"
+                    },
+                    ecg: {
+                        tag: "Hypoxic Agonal PEA",
+                        desc: "極度缺氧所致瀕死慢速心律 (Agonal PEA)，心率 32 bpm，QRS 逐漸增寬，T 波高尖。",
+                        key: "關鍵特徵：心肌窒息引起之進行性傳導阻滯"
+                    },
+                    abg: {
+                        tag: "Asphyxia State",
+                        values: "pH: 6.95 | PaCO2: 88 mmHg (急遽蓄積) | PaO2: 24 mmHg (極度窒息) | HCO3-: 20 | Lac: 9.6",
+                        interp: "急性窒息引發極度高碳酸血症呼吸性酸中毒與致死性低血氧。"
+                    }
+                },
+                assessmentData: {
+                    head: {
+                        name: "頭頸部 (Head & Neck)",
+                        tag: "Universal Choking Sign",
+                        finding: "雙手呈緊抓咽喉狀；臉部與嘴唇極度紫紺；打開呼吸道 (Jaw-thrust) 壓舌時，口咽深處隱約可見大塊未嚼碎之肉塊卡於喉頭！",
+                        callout: "「報告隊長！病患喉頭深部發現大塊固體異物完全阻塞氣道！」"
+                    },
+                    lungs: {
+                        name: "胸廓與雙肺 (Chest & Lungs)",
+                        tag: "Zero Air Entry",
+                        finding: "甦醒球壓擠完全無法灌入（通氣阻力無限大，壓不下去）；胸廓完全無起伏，雙肺聽不到任何呼吸音！",
+                        callout: "「報告隊長！甦醒球完全壓不進去，胸廓完全無起伏，完全呼吸道阻塞！」"
+                    },
+                    heart: {
+                        name: "心臟與中央血管 (Heart & Vessels)",
+                        tag: "Hypoxic PEA",
+                        finding: "心臟本身無結構病變，因血液完全無氧氣供應，心肌窒息導致電機械分離 (PEA)；脈搏摸無。",
+                        callout: "「報告隊長！極度缺氧導致心肌缺氧性 PEA！」"
+                    },
+                    pelvis: {
+                        name: "腹部與骨盆 (Abdomen & Pelvis)",
+                        tag: "Abdominal Thrusts",
+                        finding: "腹部柔軟；上腹劍突下無挫傷，骨盆穩定。",
+                        callout: "「報告隊長！腹部無內出血外傷。」"
+                    },
+                    limbs: {
+                        name: "四肢與周邊末梢 (Extremities)",
+                        tag: "Severe Cyanosis",
+                        finding: "四肢發紺發紫，微血管充填時間無法測得；指甲床完全呈深紫色。",
+                        callout: "「報告隊長！四肢肢端完全紫紺缺氧！」"
+                    },
+                    back: {
+                        name: "下肢與腰背 (Lower Limbs & Back)",
+                        tag: "Normal",
+                        finding: "背部平整，無外傷或皮下氣腫。",
+                        callout: "「報告隊長！背部平整無外傷。」"
+                    }
+                },
+                stages: [
+                    {
+                        title: "關卡 1：依據人型圖線索，鑑別 5H5T 病因",
+                        scenario: "隊員點擊「頭頸」與「胸肺」，發現【喉頭深部肉塊完全堵塞、甦醒球完全壓不進去、全身嚴重紫紺窒息】。這屬於 5H5T 中的哪一項？",
+                        options: [
+                            { text: "5H：Hypoxia (異物完全阻塞導致極度缺氧性心跳停止)", correct: true, reason: "✅ 正確！進食噎嗆 + 抓喉手勢 + 喉頭肉塊 + 氣道通氣完全無進氣，為典型異物窒息引發之極度缺氧 (Hypoxia)！" },
+                            { text: "5T：Tension Pneumothorax (張力性氣胸)", correct: false, reason: "❌ 氣胸不會看見喉頭卡著大塊食物，且通常為單側呼吸音消失。" },
+                            { text: "5H：Hypovolemia (低血容)", correct: false, reason: "❌ 無出血，與低血容無關。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 2：TRM 呼吸道異物排除手法 (Magill Forceps)",
+                        scenario: "病患無意識倒地無呼吸，隊長指示呼吸道手立即排除阻塞，標準程序為：",
+                        options: [
+                            { text: "持續胸部按壓 (CPR 按壓胸骨有助產生胸內壓噴出異物)，並在打開呼吸道時用喉頭鏡直視，以 Magill 異物鉗夾出肉塊！", correct: true, reason: "✅ 正確！無意識窒息病患應立即進行 CPR（壓胸具腹部推擠效果），並在直視下以 Magill 夾取，切忌盲目手指挖取 (Blind finger sweep)！" },
+                            { text: "用手指在看不見的情況下在咽喉深處胡亂挖取", correct: false, reason: "❌ 致命錯誤！盲目挖取極易將異物推得更深、更緊，徹底鎖死氣道！" },
+                            { text: "直接給予 Epinephrine，不管氣道卡住", correct: false, reason: "❌ 氣道未打通前，打任何藥物都無法挽救心肌缺氧窒息。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 3：異物排除後通氣與 ROSC 監測",
+                        scenario: "成功夾出 5cm 肉塊後，呼吸道手立即插管給予 100% 氧氣通氣，此時應如何以 TRM Call-out 匯報？",
+                        options: [
+                            { text: "「報告隊長！異物已排除，插管順利！雙肺呼吸音對稱且起伏良好，SpO2 迅速回升至 96%，摸到強烈頸動脈搏動！」", correct: true, reason: "✅ 正確！完美閉環通報：回報異物解除、雙肺通氣確認、血氧改善與自主循環恢復 (ROSC)！" },
+                            { text: "「肉夾出來了，大家可以散了」", correct: false, reason: "❌ 缺乏專業度與後續復甦評估。" },
+                            { text: "轉身去洗手，不監測病患呼吸音", correct: false, reason: "❌ 忽略復甦後評估。" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "案例 8：青年糖尿病患深快呼吸意識不清",
+                wheelLabel: "深快呼吸脫水昏迷倒地",
+                category: "內科急診情境",
+                initialRhythm: "細小 PEA (心跳 130 轉無脈)",
+                desc: "24 歲第 1 型糖尿病青年，連續兩天嘔吐並自行停止施打胰島素，送抵急診時呈現極深極快的 Kussmaul 呼吸，呼氣帶有強烈爛蘋果酮體氣味，隨後心跳突然停止。請團隊運用人型圖依序檢查，找出可逆死因！",
+                underlyingCause: "重度代謝性酸中毒 (Hydrogen Ion / Severe DKA Acidosis)",
+                diagnostics: {
+                    pocus: {
+                        tag: "Hypovolemic Shock",
+                        desc: "下腔靜脈 (IVC) 直徑 < 0.8 cm，吸氣時完全閉合 (Collapsibility 100%)；左心室收縮代償性過度活躍，心室腔末期幾乎無血 (Kissing walls)。",
+                        key: "關鍵特徵：重度滲透性利尿引發之極度低血管容量"
+                    },
+                    ecg: {
+                        tag: "Tall Peaked T Waves",
+                        desc: "竇速 132 bpm，全導程呈現基底狹窄、對稱高聳之帳篷狀 T 波 (Peaked T wave)，QT 間期縮短。",
+                        key: "關鍵特徵：高血鉀與嚴重酸血症對心肌再極化之典型電氣影響"
+                    },
+                    abg: {
+                        tag: "Severe DKA Acidosis",
+                        values: "pH: 6.82 (危急極低) | PaCO2: 14 mmHg (代償) | HCO3-: 3.1 mEq/L | 血糖: 580 mg/dL | K+: 7.4 | Anion Gap: 32",
+                        interp: "極重度高陰離子間隙代謝性酸中毒合併假性高血鉀與嚴重低血容。"
+                    }
+                },
+                assessmentData: {
+                    head: {
+                        name: "頭頸部 (Head & Neck)",
+                        tag: "Fruity Acetone Breath",
+                        finding: "眼窩嚴重凹陷，黏膜極度乾燥脫水；呼氣帶有極度濃烈的爛蘋果水果甜味 (Acetone odor)；頸靜脈完全扁平塌陷。",
+                        callout: "「報告隊長！病患重度脫水，呼氣有濃烈酮體果香味，懷疑重度 DKA！」"
+                    },
+                    lungs: {
+                        name: "胸廓與雙肺 (Chest & Lungs)",
+                        tag: "Deep Rapid Breathing",
+                        finding: "倒地前呼吸型態為代償性深快 Kussmaul breathing；聽診雙肺呼吸音非常清晰對稱，無囉音或喘鳴。",
+                        callout: "「報告隊長！雙肺呼吸音清晰，無氣胸或肺炎，呈現嚴重酸中毒代償徵象！」"
+                    },
+                    heart: {
+                        name: "心臟與中央血管 (Heart & Vessels)",
+                        tag: "Severe Acidosis Arrest",
+                        finding: "床邊動脈血氣體分析 (ABG) 報告破表：pH 6.82、HCO3- 僅 3 mEq/L、動脈血鉀 7.2 mEq/L！心肌在極酸環境下喪失收縮力。",
+                        callout: "「報告隊長！ABG 緊急回報：pH 6.82、HCO3 只有 3！極重度酸中毒合併嚴重高血鉀！」"
+                    },
+                    pelvis: {
+                        name: "腹部與骨盆 (Abdomen & Pelvis)",
+                        tag: "Dehydrated",
+                        finding: "腹部凹陷皮膚乾癟，彈性極差 (Poor skin turgor)；無內出血外傷。",
+                        callout: "「報告隊長！腹部無急性外傷，體液嚴重虧損！」"
+                    },
+                    limbs: {
+                        name: "四肢與周邊末梢 (Extremities)",
+                        tag: "Poor Turgor & Shock",
+                        finding: "四肢極度乾癟脫水，皮膚如羊皮紙，周邊血管全塌；微血管充填時間 > 4 秒。",
+                        callout: "「報告隊長！四肢重度脫水缺水，需大量補液！」"
+                    },
+                    back: {
+                        name: "下肢與腰背 (Lower Limbs & Back)",
+                        tag: "Normal",
+                        finding: "背部皮膚完整，無壓瘡或挫傷。",
+                        callout: "「報告隊長！背部平整。」"
+                    }
+                },
+                stages: [
+                    {
+                        title: "關卡 1：依據人型圖線索，鑑別 5H5T 病因",
+                        scenario: "隊員點擊「心臟」與「頭頸」，發現【pH 6.82 極酸、呼氣水果甜味、黏膜極度乾癟脫水、高血鉀】。這核心對應 5H5T 中的哪一項？",
+                        options: [
+                            { text: "5H：Hydrogen Ion (嚴重代謝性酸中毒，DKA 引發之極度酸中毒與高血鉀)", correct: true, reason: "✅ 正確！pH < 6.9 的極度酸中毒會嚴重抑制心肌收縮力與升壓劑反應，引發無脈心律停止！" },
+                            { text: "5T：Tension Pneumothorax (張力性氣胸)", correct: false, reason: "❌ 雙肺呼吸音乾淨且對稱，非氣胸。" },
+                            { text: "5T：Thrombosis, Pulmonary (肺栓塞)", correct: false, reason: "❌ 與嚴重酸中毒血氣數值不符。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 2：極度酸血症之特定處置與閉環給藥",
+                        scenario: "病患 pH 高達 6.82，隊長指示給藥手給予緩衝劑，標準的閉環式醫囑與給藥回覆應為：",
+                        options: [
+                            { text: "隊長：「美玲，立即靜脈注射 Sodium Bicarbonate (碳酸氫鈉) 100 mEq，並維持充分通氣避免 CO2 蓄積！」美玲覆誦確認後執行", correct: true, reason: "✅ 正確！針對極重度代謝性酸中毒 (pH < 7.0) 引發之心臟驟停，給予 Sodium Bicarbonate 能改善心肌反應，並須加強通氣排出生成的 CO2！" },
+                            { text: "隊長：「給予一般葡萄糖水慢慢滴注」", correct: false, reason: "❌ 錯誤！血糖已極高，單純給糖水無濟於事。" },
+                            { text: "「不給予任何酸鹼校正，只打生理食鹽水 100mL」", correct: false, reason: "❌ 容量補給不足且未處理致命酸血症。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 3：體液復甦與 TRM 狀況監測",
+                        scenario: "病患同時處於嚴重脫水狀態，隊長要求建立雙管大口徑靜脈進行快速等張晶體溶液輸注，團隊應如何維持狀況監測 (STEP)？",
+                        options: [
+                            { text: "持續監測通氣潮氣量排出酸氣、記錄尿量與電解質動態變化，準備後續胰島素與水分補充", correct: true, reason: "✅ 正確！落實 TRM 狀況監測 (Situation Monitoring)，全方位掌控酸鹼、電解質與容量動態平衡！" },
+                            { text: "補水 500mL 後就停止所有輸液", correct: false, reason: "❌ DKA 成人體液虧損通常高達 4000-6000mL，補液量遠遠不夠。" },
+                            { text: "完全不理會鉀離子數值變化", correct: false, reason: "❌ 糾正酸中毒後鉀離子會快速轉移回細胞內引發致命低血鉀，必須密切監測。" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "案例 9：中年主管會議中突發劇烈胸痛倒地",
+                wheelLabel: "胸痛冒冷汗突發心搏驟停",
+                category: "職場 / 急診情境",
+                initialRhythm: "粗心室顫動 (Coarse VF)",
+                desc: "52 歲科技業主管，抽菸與高血壓病史，於會議中突發如大石重壓之劇烈胸痛、冒冷汗痛至下巴與左肩，數分鐘後慘叫一聲喪失意識倒地抽搐。監視器貼上呈現粗大混亂之粗心室顫動 (VF)！請團隊運用人型圖依序檢查，找出可逆死因！",
+                underlyingCause: "急性心肌梗塞 / 冠狀動脈血栓 (Thrombosis, Coronary / Acute MI)",
+                diagnostics: {
+                    pocus: {
+                        tag: "Regional Wall Motion",
+                        desc: "心臟目前處於混亂纖維性顫動，心室無規則收縮；短暫除顫後可見心尖與前中壁局部運動完全不能 (Anterior-apical Akinesis)。",
+                        key: "關鍵特徵：左前降支 (LAD) 灌流區域廣泛心肌缺血壞死"
+                    },
+                    ecg: {
+                        tag: "Coarse VF / STEMI",
+                        desc: "立即監視呈現高振幅粗心室顫動 (Coarse VF)；除顫後 ROSC 描繪 12 導程顯示 V1-V4 ST 段弓背顯著上升 >4mm (Anterior STEMI)！",
+                        key: "關鍵特徵：急性前壁 ST 段上升心肌梗塞，血栓完全阻塞冠狀動脈"
+                    },
+                    abg: {
+                        tag: "Post-Arrest Acidosis",
+                        values: "pH: 7.24 | PaCO2: 46 mmHg | PaO2: 92 mmHg (CPR 中) | HCO3-: 18 mEq/L | Trop-I: 顯著上升 | Lac: 5.2",
+                        interp: "急性心肌壞死伴驟停後混合性酸中毒，需立即啟動心導管 PCI！"
+                    }
+                },
+                assessmentData: {
+                    head: {
+                        name: "頭頸部 (Head & Neck)",
+                        tag: "Profuse Cold Sweating",
+                        finding: "額頭與臉頰滿布冰冷冷汗 (Diaphoresis)；嘴唇發紺；雙側頸動脈完全摸無搏動；氣管置中，頸靜脈微怒張。",
+                        callout: "「報告隊長！病患滿頭大汗如雨，頸動脈無搏動，極度缺血表徵！」"
+                    },
+                    lungs: {
+                        name: "胸廓與雙肺 (Chest & Lungs)",
+                        tag: "Acute Pulmonary Congestion",
+                        finding: "雙側胸廓起伏對稱；聽診雙肺底可聞及急性心因性肺水腫之細濕囉音 (Bibasilar rales)，甦醒球通氣良好無氣胸阻力。",
+                        callout: "「報告隊長！雙肺底有些許濕囉音，通氣無大阻力，排除氣胸！」"
+                    },
+                    heart: {
+                        name: "心臟與中央血管 (Heart & Vessels)",
+                        tag: "Coarse VF",
+                        finding: "監視器呈現振幅大且極度紊亂之粗心室顫動 (Coarse VF)！心室完全喪失機械性射血功能，必須立即電擊！",
+                        callout: "「報告隊長！監視器為 Coarse VF！是可電擊致命心律，請立即非同步除顫！」"
+                    },
+                    pelvis: {
+                        name: "腹部與骨盆 (Abdomen & Pelvis)",
+                        tag: "Soft",
+                        finding: "腹部柔軟平坦，骨盆穩固無骨折外傷。",
+                        callout: "「報告隊長！骨盆腹部無外傷。」"
+                    },
+                    limbs: {
+                        name: "四肢與周邊末梢 (Extremities)",
+                        tag: "Cold & Clammy",
+                        finding: "雙手冰涼濕冷，微血管充填時間 > 3 秒；無周邊深層靜脈血栓腫脹。",
+                        callout: "「報告隊長！四肢濕冷低灌流，無外傷！」"
+                    },
+                    back: {
+                        name: "下肢與腰背 (Lower Limbs & Back)",
+                        tag: "No Trauma",
+                        finding: "背部無任何穿刺外傷或瘀血。",
+                        callout: "「報告隊長！背部平整。」"
+                    }
+                },
+                stages: [
+                    {
+                        title: "關卡 1：假死人 VF 之第一優先搶救處置",
+                        scenario: "病患無脈搏，監視器呈現 Coarse VF。依據 2025 ACLS 指引與 TRM 角色職責，隊長第一道口令應為：",
+                        options: [
+                            { text: "「電擊手立即充電雙相波 200 J，大家離開準備除顫！按壓手持續壓胸直到放電前一秒！」", correct: true, reason: "✅ 正確！VF / Pulseless VT 為可電擊心律，除顫（Defibrillation）是唯一能終止心室顫動的救命處置！" },
+                            { text: "「先不用電，大家先慢慢抽 Epinephrine 來打」", correct: false, reason: "❌ 延誤關鍵電擊去顫，每延遲 1 分鐘存活率下降 7–10%！" },
+                            { text: "直接執行心包膜穿刺", correct: false, reason: "❌ 毫無根據，VF 首選一律為除顫電擊。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 2：除顫安全口號與「不等波形立即恢復 CPR」",
+                        scenario: "電擊手放電完畢後，團隊接下來最關鍵的 TRM 閉環動作是：",
+                        options: [
+                            { text: "電擊手大聲宣告：「電擊完成，立刻恢復按壓！」按壓手不等看波形、不摸脈搏，立刻衝上去高品質壓胸 2 分鐘！", correct: true, reason: "✅ 正確！電擊後心肌處於頓化狀態，必須立即恢復 CPR 2 分鐘，絕不可停下來摸脈搏浪費時間！" },
+                            { text: "所有人停下來盯著螢幕看 20 秒討論波形變了沒", correct: false, reason: "❌ 違反指引！電擊後嚴禁停下來看心律，必須立即恢復壓胸！" },
+                            { text: "大家互相擊掌慶祝", correct: false, reason: "❌ 此時尚未確認 ROSC，心臟仍無有效射血。" }
+                        ]
+                    },
+                    {
+                        title: "關卡 3：ROSC 後心導管決策與跨科 SBAR",
+                        scenario: "經 2 次除顫與高品質 CPR 後病患恢復自主循環 (ROSC)，12 導程心電圖顯示 Anterior STEMI。隊長的 TRM 跨科處置應為：",
+                        options: [
+                            { text: "啟動 SBAR 即刻照會心臟科導管室：「啟動緊急心導管 (Code PCI)，病患為 STEMI 合併 OHCA，準備進行冠狀動脈血管攝影與支架置入！」", correct: true, reason: "✅ 正確！冠狀動脈血栓阻塞為致死根源，2025 指引明確指出 STEMI 合併心臟驟停應立即緊急執行 PCI 打通血管！" },
+                            { text: "等病人完全清醒能走路了再考慮照心電圖", correct: false, reason: "❌ 延誤心肌再灌流黃金時間，將引發廣泛心肌壞死與二次驟停。" },
+                            { text: "只給止痛藥，取消所有急救設備監測", correct: false, reason: "❌ 嚴重違反應急救護標準。" }
+                        ]
+                    }
+                ]
+            },
+            // 特別事件選項 1：換下一組
+            {
+                isSpecial: true,
+                type: "nextTeam",
+                name: "特別事件：換下一組挑戰！",
+                wheelLabel: "⚡ 換下一組挑戰",
+                color: "#f59e0b",
+                title: "換下一組上場實戰！",
+                icon: "👥",
+                desc: "輪盤指示：【全體換班】！恭喜當前小組順利交棒，請現場指派下一組學員接手急救戰鬥位置，重新旋轉輪盤迎接新挑戰！"
+            },
+            // 特別事件選項 2：休息一下 / 團隊充電
+            {
+                isSpecial: true,
+                type: "takeBreak",
+                name: "特別事件：休息一下 / 團隊充電！",
+                wheelLabel: "☕ 休息一下/團隊充電",
+                color: "#10b981",
+                title: "團隊充電時間 (Team Debrief)",
+                icon: "☕",
+                desc: "恭喜抽中【團隊充電時光】！全體學員深呼吸喝口水，進行 3 分鐘 TRM 團隊復盤 (Debriefing)。回顧剛才按壓深度是否足夠？閉環式溝通是否落實？充電完畢後再戰！"
+            }
+        ];
+
+        // 轉盤繪製與旋轉邏輯
+        let currentCaseIndex = 0;
+        let currentStageIndex = 0;
+        let isSpinning = false;
+        let currentRotation = 0;
+
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const numSlices = megacodeCases.length;
+        const arc = (2 * Math.PI) / numSlices;
+
+        const sliceColors = [
+            '#0e7490', '#7c3aed', '#b91c1c', '#047857', '#d97706',
+            '#4338ca', '#be123c', '#0f766e', '#6d28d9', '#f59e0b', '#10b981'
+        ];
+
+        function drawWheel() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = centerX - 10;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < numSlices; i++) {
+                const angle = currentRotation + i * arc;
+                ctx.beginPath();
+                ctx.fillStyle = megacodeCases[i].color || sliceColors[i % sliceColors.length];
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, angle, angle + arc);
+                ctx.lineTo(centerX, centerY);
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#080c18';
+                ctx.stroke();
+
+                // 扇形文字繪製（使用相容性最佳的標準繁體黑體）
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(angle + arc / 2);
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 12.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+                
+                const label = megacodeCases[i].wheelLabel;
+                ctx.fillText(label, radius - 14, 0);
+                ctx.restore();
+            }
+
+            // 中心外圈修飾
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 42, 0, 2 * Math.PI);
+            ctx.fillStyle = '#080c18';
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#06b6d4';
+            ctx.stroke();
+        }
+
+        window.onload = function() {
+            drawWheel();
+        };
+
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            // 轉盤旋轉中：對話框提示
+            const bubbleTag = document.getElementById('speechBubbleTag');
+            const bubbleText = document.getElementById('speechBubbleText');
+            bubbleTag.innerText = "旋轉抽題中...";
+            bubbleTag.className = "text-amber-400 text-sm font-bold animate-pulse";
+            bubbleText.innerText = "命運指針飛速旋轉中，請各戰鬥位置急救小組做好準備！";
+
+            document.getElementById('caseResultBox').classList.add('hidden');
+            document.getElementById('specialEventBox').classList.add('hidden');
+
+            const spinRotations = 5 + Math.floor(Math.random() * 5); // 旋轉 5~9 圈
+            const randomStopAngle = Math.random() * 2 * Math.PI;
+            const totalRotationToAdd = spinRotations * 2 * Math.PI + randomStopAngle;
+
+            const startRotation = currentRotation;
+            const endRotation = currentRotation + totalRotationToAdd;
+            const duration = 4000;
+            const startTime = performance.now();
+
+            function animate(time) {
+                const elapsed = time - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                currentRotation = startRotation + (endRotation - startRotation) * ease;
+                drawWheel();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    isSpinning = false;
+                    calculateWinner();
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function calculateWinner() {
+            const normalizedRotation = (currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+            const pointerAngle = (1.5 * Math.PI - normalizedRotation + 2 * Math.PI) % (2 * Math.PI);
+            const winningIndex = Math.floor(pointerAngle / arc) % numSlices;
+
+            currentCaseIndex = winningIndex;
+            const chosen = megacodeCases[winningIndex];
+
+            // 慶祝彩帶效果
+            confetti({
+                particleCount: 70,
+                spread: 60,
+                origin: { y: 0.6 }
+            });
+
+            // ================= 更新轉盤上方即時對話框 =================
+            const bubbleTag = document.getElementById('speechBubbleTag');
+            const bubbleText = document.getElementById('speechBubbleText');
+
+            if (chosen.isSpecial) {
+                bubbleTag.innerText = "抽中特別事件！";
+                bubbleTag.className = "text-amber-300 text-sm font-bold";
+                bubbleText.innerHTML = `<span class="text-amber-300">${chosen.icon} ${chosen.title}</span>`;
+                showSpecialEvent(chosen);
+                return;
+            }
+
+            // 一般案例情境對話框顯示
+            bubbleTag.innerText = `情境揭曉 • ${chosen.category}`;
+            bubbleTag.className = "text-cyan-300 text-sm font-bold";
+            bubbleText.innerHTML = `【${chosen.wheelLabel}】<br><span class="text-sm text-slate-300 font-normal">初始心律：${chosen.initialRhythm}</span>`;
+
+            // 展示下方詳細內容
+            document.getElementById('specialEventBox').classList.add('hidden');
+            const resultBox = document.getElementById('caseResultBox');
+            resultBox.classList.remove('hidden');
+
+            document.getElementById('caseCategory').innerText = chosen.category;
+            document.getElementById('caseInitialRhythm').innerText = chosen.initialRhythm;
+            document.getElementById('caseTitle').innerText = chosen.name;
+            document.getElementById('caseDescription').innerText = chosen.desc;
+        }
+
+        function showSpecialEvent(eventObj) {
+            document.getElementById('caseResultBox').classList.add('hidden');
+            const box = document.getElementById('specialEventBox');
+            box.classList.remove('hidden');
+
+            const isNextTeam = eventObj.type === "nextTeam";
+            box.className = isNextTeam 
+                ? "mt-5 p-5 rounded-2xl border-2 border-amber-500 bg-amber-950/40 shadow-2xl animate-fade-in text-center max-w-lg mx-auto"
+                : "mt-5 p-5 rounded-2xl border-2 border-emerald-500 bg-emerald-950/40 shadow-2xl animate-fade-in text-center max-w-lg mx-auto";
+
+            document.getElementById('specialIcon').innerText = eventObj.icon;
+            document.getElementById('specialTitle').innerText = eventObj.title;
+            document.getElementById('specialDesc').innerText = eventObj.desc;
+        }
+
+        function resetSpecialEvent() {
+            document.getElementById('specialEventBox').classList.add('hidden');
+            spinWheel();
+        }
+
+        function goToRoles() {
+            const chosen = megacodeCases[currentCaseIndex];
+            if (chosen.isSpecial) return;
+
+            document.getElementById('sectionWheel').classList.add('hidden');
+            document.getElementById('sectionRoles').classList.remove('hidden');
+            document.getElementById('sectionQuest').classList.add('hidden');
+
+            updateNav(2);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goToQuest() {
+            const chosen = megacodeCases[currentCaseIndex];
+            if (chosen.isSpecial) return;
+
+            document.getElementById('sectionWheel').classList.add('hidden');
+            document.getElementById('sectionRoles').classList.add('hidden');
+            document.getElementById('sectionQuest').classList.remove('hidden');
+
+            updateNav(3);
+            currentStageIndex = 0;
+            initStage();
+            // 預設人型圖檢視頭頸部
+            inspectBodyPart('head');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetToWheel() {
+            document.getElementById('sectionWheel').classList.remove('hidden');
+            document.getElementById('sectionRoles').classList.add('hidden');
+            document.getElementById('sectionQuest').classList.add('hidden');
+
+            updateNav(1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateNav(step) {
+            const n1 = document.getElementById('navStep1');
+            const n2 = document.getElementById('navStep2');
+            const n3 = document.getElementById('navStep3');
+
+            n1.className = step === 1 
+                ? "py-2.5 px-3 rounded-xl bg-cyan-950/90 text-cyan-300 border-2 border-cyan-500 shadow-md flex items-center justify-center gap-1.5 transition"
+                : "py-2.5 px-3 rounded-xl bg-slate-900/80 text-slate-400 border border-slate-800 flex items-center justify-center gap-1.5 transition";
+
+            n2.className = step === 2 
+                ? "py-2.5 px-3 rounded-xl bg-purple-950/90 text-purple-300 border-2 border-purple-500 shadow-md flex items-center justify-center gap-1.5 transition"
+                : "py-2.5 px-3 rounded-xl bg-slate-900/80 text-slate-400 border border-slate-800 flex items-center justify-center gap-1.5 transition";
+
+            n3.className = step === 3 
+                ? "py-2.5 px-3 rounded-xl bg-emerald-950/90 text-emerald-300 border-2 border-emerald-500 shadow-md flex items-center justify-center gap-1.5 transition"
+                : "py-2.5 px-3 rounded-xl bg-slate-900/80 text-slate-400 border border-slate-800 flex items-center justify-center gap-1.5 transition";
+        }
+
+        // ================= 人型圖檢驗機制 (Head-to-Toe Inspection) =================
+        function inspectBodyPart(partKey) {
+            const cCase = megacodeCases[currentCaseIndex];
+            if (!cCase || !cCase.assessmentData) return;
+
+            const partInfo = cCase.assessmentData[partKey];
+            if (!partInfo) return;
+
+            // 切換熱點發光效果
+            document.querySelectorAll('.body-hotspot').forEach(el => el.classList.remove('active'));
+            const activeHotspot = document.getElementById(`hotspot-${partKey}`);
+            if (activeHotspot) activeHotspot.classList.add('active');
+
+            // 更新右側面板資料
+            document.getElementById('assessmentPartName').innerText = partInfo.name;
+            document.getElementById('assessmentTargetTag').innerText = partInfo.tag;
+            document.getElementById('assessmentFindingText').innerText = partInfo.finding;
+            document.getElementById('assessmentTrmCallout').innerText = partInfo.callout;
+        }
+
+        // 闖關舞台初始化
+        function initStage() {
+            const cCase = megacodeCases[currentCaseIndex];
+            if (!cCase || cCase.isSpecial) return;
+
+            const stage = cCase.stages[currentStageIndex];
+
+            document.getElementById('questCaseHeader').innerText = cCase.name;
+            document.getElementById('currentStageText').innerText = `關卡 ${currentStageIndex + 1} / ${cCase.stages.length}`;
+            document.getElementById('hudRhythm').innerText = cCase.initialRhythm;
+            document.getElementById('stageBadge').innerText = `Q${currentStageIndex + 1}`;
+            document.getElementById('stageTitle').innerText = stage.title;
+            document.getElementById('stageScenario').innerText = stage.scenario;
+
+            // ================= 載入床邊檢查客觀數據卡 (POCUS / 12-Lead / ABG) =================
+            if (cCase.diagnostics) {
+                const diag = cCase.diagnostics;
+                // POCUS
+                document.getElementById('cardPocusTag').innerText = diag.pocus.tag;
+                document.getElementById('cardPocusDesc').innerText = diag.pocus.desc;
+                document.getElementById('cardPocusKey').innerText = diag.pocus.key;
+                // ECG
+                document.getElementById('cardEcgTag').innerText = diag.ecg.tag;
+                document.getElementById('cardEcgDesc').innerText = diag.ecg.desc;
+                document.getElementById('cardEcgKey').innerText = diag.ecg.key;
+                // ABG
+                document.getElementById('cardAbgTag').innerText = diag.abg.tag;
+                document.getElementById('cardAbgValues').innerText = diag.abg.values;
+                document.getElementById('cardAbgInterpretation').innerText = diag.abg.interp;
+            }
+
+            const feedback = document.getElementById('feedbackBox');
+            feedback.classList.add('hidden');
+            feedback.innerHTML = '';
+
+            const nextBtn = document.getElementById('nextStageBtn');
+            nextBtn.classList.add('hidden');
+
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            stage.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-left text-xs font-semibold text-slate-200 transition flex items-start gap-2 shadow";
+                btn.innerHTML = `
+                    <span class="w-5 h-5 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-[10px] font-bold text-cyan-400 shrink-0 mt-0.5">${String.fromCharCode(65 + idx)}</span>
+                    <span class="leading-relaxed">${opt.text}</span>
+                `;
+                btn.onclick = () => selectOption(opt, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        // ================= 2 分鐘 CPR 計時器與 Web Audio 倒數警示音效系統 =================
+        let cprTimerInterval = null;
+        let cprSecondsLeft = 120; // 2 分鐘 = 120 秒
+        let isTimerRunning = false;
+        let isAudioMuted = false;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // 使用 Web Audio 合成醫療監視器嗶聲 (無需任何外部音效檔)
+        function playBedsideBeep(freq = 880, duration = 0.12, type = 'sine') {
+            if (isAudioMuted) return;
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch (e) {
+                console.debug("Audio play issue", e);
+            }
+        }
+
+        // 倒數 10 秒警告三連音
+        function playWarningChime() {
+            if (isAudioMuted) return;
+            playBedsideBeep(700, 0.08);
+            setTimeout(() => playBedsideBeep(950, 0.12), 100);
+        }
+
+        // 2 分鐘時間到長鳴急救警報音
+        function playTimeUpAlarm() {
+            if (isAudioMuted) return;
+            playBedsideBeep(1200, 0.25, 'triangle');
+            setTimeout(() => playBedsideBeep(1200, 0.25, 'triangle'), 300);
+            setTimeout(() => playBedsideBeep(1500, 0.45, 'sawtooth'), 600);
+        }
+
+        function updateTimerUI() {
+            const minutes = Math.floor(cprSecondsLeft / 60);
+            const seconds = cprSecondsLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            const displayEl = document.getElementById('cprTimerDisplay');
+            const noticeEl = document.getElementById('timerStatusNotice');
+            const bannerEl = document.getElementById('cprWarningBanner');
+            displayEl.innerText = displayStr;
+
+            // 倒數最後 10 秒機制
+            if (cprSecondsLeft <= 10 && cprSecondsLeft > 0) {
+                displayEl.className = "text-2xl font-black font-mono text-rose-400 tracking-wider mt-0.5 animate-pulse";
+                noticeEl.innerText = `⚠️ 最後 ${cprSecondsLeft} 秒！準備換手！`;
+                noticeEl.className = "text-xs text-rose-300 font-extrabold animate-bounce";
+                bannerEl.classList.remove('hidden');
+                bannerEl.innerText = `⚠️ 嗶！最後 ${cprSecondsLeft} 秒：呼吸道手準備暫停通氣，按壓手準備換手！`;
+                playWarningChime();
+            } else if (cprSecondsLeft === 0) {
+                displayEl.className = "text-2xl font-black font-mono text-rose-500 tracking-wider mt-0.5";
+                noticeEl.innerText = "🛑 2 分鐘已到！分析心律！";
+                noticeEl.className = "text-xs text-rose-400 font-black";
+                bannerEl.classList.remove('hidden');
+                bannerEl.innerText = "🛑 時間到！全員停止壓胸！換手、觸摸中心動脈並分析心律！";
+                playTimeUpAlarm();
+            } else {
+                displayEl.className = "text-2xl font-black font-mono text-white tracking-wider mt-0.5";
+                noticeEl.innerText = "按壓計時進行中";
+                noticeEl.className = "text-xs text-cyan-300 font-bold";
+                bannerEl.classList.add('hidden');
+            }
+        }
+
+        function toggleCprTimer() {
+            if (isTimerRunning) {
+                // 暫停
+                clearInterval(cprTimerInterval);
+                isTimerRunning = false;
+                document.getElementById('timerToggleIcon').className = "fa-solid fa-play";
+                document.getElementById('timerToggleText').innerText = "繼續計時";
+                document.getElementById('timerToggleBtn').className = "px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white font-black text-xs transition flex items-center gap-1.5 shadow";
+            } else {
+                // 開始
+                if (cprSecondsLeft <= 0) cprSecondsLeft = 120;
+                isTimerRunning = true;
+                document.getElementById('timerToggleIcon').className = "fa-solid fa-pause";
+                document.getElementById('timerToggleText').innerText = "暫停計時";
+                document.getElementById('timerToggleBtn').className = "px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-rose-600 hover:brightness-110 text-white font-black text-xs transition flex items-center gap-1.5 shadow";
+                getAudioContext(); // 預先喚醒音訊環境
+
+                cprTimerInterval = setInterval(() => {
+                    if (cprSecondsLeft > 0) {
+                        cprSecondsLeft--;
+                        updateTimerUI();
+                    } else {
+                        clearInterval(cprTimerInterval);
+                        isTimerRunning = false;
+                        document.getElementById('timerToggleIcon').className = "fa-solid fa-rotate-right";
+                        document.getElementById('timerToggleText').innerText = "重新循環";
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetCprTimer() {
+            clearInterval(cprTimerInterval);
+            isTimerRunning = false;
+            cprSecondsLeft = 120;
+            document.getElementById('timerToggleIcon').className = "fa-solid fa-play";
+            document.getElementById('timerToggleText').innerText = "啟動 2 分鐘倒數";
+            document.getElementById('timerToggleBtn').className = "px-4 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 hover:brightness-110 text-white font-black text-xs transition flex items-center gap-1.5 shadow";
+            document.getElementById('cprWarningBanner').classList.add('hidden');
+            updateTimerUI();
+        }
+
+        function toggleAudioMute() {
+            isAudioMuted = !isAudioMuted;
+            const icon = document.getElementById('audioMuteIcon');
+            const btn = document.getElementById('audioMuteBtn');
+            if (isAudioMuted) {
+                icon.className = "fa-solid fa-volume-xmark";
+                btn.className = "px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-rose-400 text-xs font-bold border border-slate-700 transition";
+            } else {
+                icon.className = "fa-solid fa-volume-high";
+                btn.className = "px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-bold border border-slate-700 transition";
+                playBedsideBeep(880, 0.1);
+            }
+        }
+
+        function selectOption(opt, btnElement) {
+            const container = document.getElementById('optionsContainer');
+            const buttons = container.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+
+            const feedback = document.getElementById('feedbackBox');
+            feedback.classList.remove('hidden');
+
+            if (opt.correct) {
+                btnElement.classList.remove('bg-slate-800/80', 'border-slate-700');
+                btnElement.classList.add('bg-emerald-950/80', 'border-emerald-500', 'text-emerald-200');
+
+                feedback.className = "p-3 rounded-xl border border-emerald-500 bg-emerald-950/40 text-emerald-200 text-xs leading-relaxed animate-fade-in";
+                feedback.innerHTML = `<strong>【決策正確 • TRM 閉環成功】</strong><br>${opt.reason}`;
+
+                document.getElementById('hudTeamStatus').innerText = "處置正確 • 團隊前進";
+                document.getElementById('hudTeamStatus').className = "text-sm font-black text-emerald-400 font-mono mt-0.5";
+
+                const nextBtn = document.getElementById('nextStageBtn');
+                nextBtn.classList.remove('hidden');
+
+                const cCase = megacodeCases[currentCaseIndex];
+                if (currentStageIndex === cCase.stages.length - 1) {
+                    nextBtn.innerHTML = `<span>🎉 成功逆轉！完成 Megacode 闖關</span> <i class="fa-solid fa-trophy"></i>`;
+                } else {
+                    nextBtn.innerHTML = `<span>進入下一情境變化</span> <i class="fa-solid fa-arrow-right"></i>`;
+                }
+            } else {
+                btnElement.classList.remove('bg-slate-800/80', 'border-slate-700');
+                btnElement.classList.add('bg-rose-950/80', 'border-rose-500', 'text-rose-200');
+
+                feedback.className = "p-3 rounded-xl border border-rose-500 bg-rose-950/40 text-rose-200 text-xs leading-relaxed animate-fade-in";
+                feedback.innerHTML = `<strong>【處置失誤 • 團隊警示】</strong><br>${opt.reason}<br><span class="text-amber-300 font-bold mt-1 inline-block">請運用人型圖重新查探線索後再次嘗試！</span>`;
+
+                document.getElementById('hudTeamStatus').innerText = "處置有誤 • 需修正";
+                document.getElementById('hudTeamStatus').className = "text-sm font-black text-rose-400 font-mono mt-0.5";
+
+                setTimeout(() => {
+                    buttons.forEach(b => b.disabled = false);
+                }, 1200);
+            }
+        }
+
+        function nextStage() {
+            const cCase = megacodeCases[currentCaseIndex];
+            if (currentStageIndex < cCase.stages.length - 1) {
+                currentStageIndex++;
+                initStage();
+            } else {
+                // 全部通關
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.5 }
+                });
+                alert(`🎉 恭喜急救團隊！成功破譯 5H5T【${cCase.underlyingCause}】，展現極致 TRM 團隊默契，病患自主循環順利恢復 (ROSC)！`);
+                resetToWheel();
+            }
+        }
+    </script>
+</body>
+</html>
