@@ -7,10 +7,6 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Canvas Confetti for Celebration -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -122,7 +118,6 @@
     </style>
 </head>
 <body class="bg-quest-dark text-slate-100 font-sans min-h-screen py-4 px-2 sm:px-4">
-<body class="bg-quest-dark text-slate-100 font-kai min-h-screen py-4 px-2 sm:px-4">
 
     <!-- 頂部資訊列：標題修改為 ACLS-Megacode -->
     <header class="max-w-5xl mx-auto mb-4 flex flex-wrap items-center justify-between gap-3 bg-quest-card border border-quest-border px-4 py-3 rounded-2xl shadow-xl">
@@ -532,7 +527,7 @@
                             <div class="text-amber-300 font-bold flex items-center gap-1.5">
                                 <i class="fa-solid fa-magnifying-glass"></i> 理學檢查客觀發現 (Physical Findings)：
                             </div>
-                            <p class="text-slate-200 leading-relaxed font-kai" id="assessmentFindingText">
+                            <p class="text-slate-200 leading-relaxed" id="assessmentFindingText">
                                 請點擊左方人型圖發光節點（頭頸、胸肺、心臟、骨盆、肢端），即可查驗當前安妮病患的即時臨床體徵。
                             </p>
                         </div>
@@ -705,6 +700,18 @@
         </footer>
 
     </main>
+
+    <!-- 通關慶祝視窗 (取代 alert) -->
+    <div id="victoryModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-quest-card border-2 border-emerald-400 rounded-3xl p-6 max-w-md w-full text-center shadow-2xl space-y-4">
+            <div class="text-5xl">🎉</div>
+            <h3 class="text-2xl font-black text-emerald-300">急救成功 • 恢復自主循環 (ROSC)！</h3>
+            <p id="victoryModalText" class="text-slate-200 leading-relaxed"></p>
+            <button onclick="closeVictoryModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-black shadow-lg hover:brightness-110 transition">
+                返回大輪盤繼續挑戰
+            </button>
+        </div>
+    </div>
 
     <script>
         // 9 大臨床盲抽情境題庫 + 2 大轉盤特別事件
@@ -927,7 +934,7 @@
                     lungs: {
                         name: "胸廓與雙肺 (Chest & Lungs)",
                         tag: "Clear Bilaterally",
-                        finding: "雙胸起伏對稱；聽診雙肺呼吸音清晰，兩側皆無囉音或呼吸音消失，完全排除了張力性氣胸！",
+                        finding: "雙胸起伏對稱；聽診雙肺呼吸音清晰乾淨，兩側皆無囉音或呼吸音消失，完全排除了張力性氣胸！",
                         callout: "「報告隊長！雙肺呼吸音完全對稱且乾淨，可排除張力性氣胸！」"
                     },
                     heart: {
@@ -1628,9 +1635,42 @@
             drawWheel();
         };
 
+        // 轉盤撥片「答答答」清脆音效
+        function playWheelTickSound() {
+            if (isAudioMuted) return;
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(650, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.045);
+
+                gain.gain.setValueAtTime(0.35, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.045);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.045);
+            } catch (e) {}
+        }
+
+        // 轉盤停下抽中題目慶祝和弦音效
+        function playWheelWinSound() {
+            if (isAudioMuted) return;
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+            notes.forEach((freq, idx) => {
+                setTimeout(() => {
+                    playBedsideBeep(freq, 0.18, 'triangle');
+                }, idx * 90);
+            });
+        }
+
         function spinWheel() {
             if (isSpinning) return;
             isSpinning = true;
+            getAudioContext(); // 喚醒瀏覽器音效
 
             // 轉盤旋轉中：對話框提示
             const bubbleTag = document.getElementById('speechBubbleTag');
@@ -1650,6 +1690,7 @@
             const endRotation = currentRotation + totalRotationToAdd;
             const duration = 4000;
             const startTime = performance.now();
+            let lastSliceIndex = -1;
 
             function animate(time) {
                 const elapsed = time - startTime;
@@ -1658,10 +1699,20 @@
                 currentRotation = startRotation + (endRotation - startRotation) * ease;
                 drawWheel();
 
+                // 計算目前指針經過哪一格，跨格時觸發撥片音效
+                const normRot = (currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+                const ptrAngle = (1.5 * Math.PI - normRot + 2 * Math.PI) % (2 * Math.PI);
+                const activeSlice = Math.floor(ptrAngle / arc) % numSlices;
+                if (activeSlice !== lastSliceIndex) {
+                    playWheelTickSound();
+                    lastSliceIndex = activeSlice;
+                }
+
                 if (progress < 1) {
                     requestAnimationFrame(animate);
                 } else {
                     isSpinning = false;
+                    playWheelWinSound();
                     calculateWinner();
                 }
             }
@@ -2054,14 +2105,20 @@
                 initStage();
             } else {
                 // 全部通關
+                playWheelWinSound();
                 confetti({
                     particleCount: 120,
                     spread: 80,
                     origin: { y: 0.5 }
                 });
-                alert(`🎉 恭喜急救團隊！成功破譯 5H5T【${cCase.underlyingCause}】，展現極致 TRM 團隊默契，病患自主循環順利恢復 (ROSC)！`);
-                resetToWheel();
+                document.getElementById('victoryModalText').innerText = `恭喜急救團隊！成功破譯 5H5T【${cCase.underlyingCause}】，展現極致 TRM 團隊默契，病患自主循環順利恢復 (ROSC)！`;
+                document.getElementById('victoryModal').classList.remove('hidden');
             }
+        }
+
+        function closeVictoryModal() {
+            document.getElementById('victoryModal').classList.add('hidden');
+            resetToWheel();
         }
     </script>
 </body>
